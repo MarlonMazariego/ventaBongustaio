@@ -31,8 +31,8 @@ fecha date
 
 -- 3. Creación de tabla para almacenar estados de cuenta(Cálculo Gap)
 create table if not exists tbEstados(
-	  id_estado int not null primary key auto_increment
-	  ventas decimal(18,2),
+id_estado int not null primary key auto_increment,
+ventas decimal(18,2),
     inv_inicial decimal(18,2),
     compras decimal(18,2),
     gst_compras decimal(18,2),

@@ -54,6 +54,9 @@ public class DetalleProducto implements Serializable{
     
     @Column(name = "comentarios")
     private String comentarios;
+    
+    @Column(name = "valor_en_inv")
+    private int valor_en_inv;
 
     public DetalleProducto() {
     }
@@ -122,6 +125,14 @@ public class DetalleProducto implements Serializable{
         this.comentarios = comentarios;
     }
 
+    public int getValor_en_inv() {
+        return valor_en_inv;
+    }
+
+    public void setValor_en_inv(int valor_en_inv) {
+        this.valor_en_inv = valor_en_inv;
+    }        
+
     @Override
     public int hashCode() {
         int hash = 3;
@@ -151,6 +162,7 @@ public class DetalleProducto implements Serializable{
     public String toString() {
         return "DetalleProducto{" + "id_detalleProd=" + id_detalleProd + '}';
     }
+    
     
     
     

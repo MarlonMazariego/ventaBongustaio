@@ -8,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+@Entity
 @Table(name = "tbRolesUsuario")
 public class RolesUsuario implements Serializable{
     

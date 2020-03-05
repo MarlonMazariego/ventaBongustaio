@@ -1,9 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package Entity;
+package entity;
+
 
 import java.io.Serializable;
 import javax.persistence.Column;
@@ -26,7 +22,7 @@ public class Tiempo implements Serializable{
     @Column(name="tipo")
     private String tipo;
     
-    @JoinColumn(name="id_tipoSucursal" , referencedColumnName = "id")
+    @JoinColumn(name="id_tipoSucursal" , referencedColumnName = "id_tipoSucursal")
     @ManyToOne
     private TipoSucursal id_tipoSucursal;
 

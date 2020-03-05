@@ -1,0 +1,213 @@
+create database if not exists punto_venta;
+use punto_venta;
+
+create table if not exists tbTipoSucursal(
+id_tipoSucursal int not null primary key auto_increment,
+nombre varchar(30)
+)engine InnoDB;
+
+create table if not exists tbSucursal(
+id_sucursal int not null primary key auto_increment,
+id_tipoSucursal int,
+nombre varchar(50),
+dir varchar(300),
+tel varchar(15),
+fecha_creacion date,
+capital_inicial decimal(18,2),
+constraint fk_tipoSucursal_sucursal foreign key(id_tipoSucursal) references tbTipoSucursal(id_tipoSucursal)
+)engine InnoDB;
+
+create table if not exists tbCargo(
+id_cargo int not null primary key auto_increment,
+cargo varchar(50)
+)engine InnoDB;
+
+create table if not exists tbPersona(
+id_persona int not null primary key auto_increment,
+nombres varchar(50),
+apellidos varchar(50),
+dui varchar(10),
+nit varchar(16),
+edad int,
+tel varchar(15),
+dir varchar(300),
+email varchar(80),
+genero enum('M', 'F', 'N/A'),
+salario_asignado decimal(18,2),
+id_cargo int,
+id_sucursal int,
+constraint fk_cargo_persona foreign key (id_cargo) references tbCargo(id_cargo),
+constraint fk_sucursal_persona foreign key (id_sucursal) references tbSucursal(id_sucursal)
+)engine InnoDB;
+
+create table if not exists tbRolesUsuario(
+id_rolesUsuario int not null primary key auto_increment,
+rol varchar(50)
+)engine InnoDB;
+
+create table if not exists tbUsuario(
+id_usuario int not null primary key auto_increment,
+nickName varchar(50),
+pass varchar(50),
+id_persona int,
+id_rolesUsuario int,
+constraint fk_persona_usuario foreign key (id_persona) references tbPersona(id_persona),
+constraint fk_rolesUsuario_persona foreign key (id_rolesUsuario) references tbRolesUsuario(id_rolesUsuario)
+)engine InnoDB;
+
+create table if not exists tbProveedor(
+id_proveedor int not null primary key auto_increment,
+nombre varchar(50),
+nit varchar(16),
+tel varchar(15),
+dir varchar(300),
+email varchar(80)
+)engine InnoDB;
+
+create table if not exists tbTiempo(
+id_tipo int not null primary key auto_increment,
+tipo varchar(30),
+id_tipoSucursal int,
+constraint fk_tipoSucursal_tiempo foreign key(id_tipoSucursal) references tbTipoSucursal(id_tipoSucursal)
+)engine InnoDB;
+
+create table if not exists tbscaPlatillo(
+id_subCategoria int not null primary key auto_increment,
+tipo varchar(30),
+id_tipo int,
+constraint fk_tipo_scaPlatillo foreign key (id_tipo) references tbTiempo(id_tipo)
+)engine InnoDB;
+
+create table if not exists tbProducto(
+id_producto int not null primary key auto_increment,
+nombre_producto varchar(60),
+descripcion varchar(100),
+unidad_medida varchar(5),
+id_subCategoria int,
+stock_min int,
+existencias int,
+stock_max int,
+costo_unitario decimal(18,2),
+constraint fk_subCategoria_producto foreign key(id_subCategoria) references tbscaPlatillo(id_subCategoria)
+)engine InnoDB;
+
+create table if not exists tbDetalleProducto(
+id_detalleProd int not null primary key auto_increment,
+id_proveedor int,
+id_producto int,
+id_sucursal int,
+id_usuario int,
+unidades_recibidas int,
+fecha_hora timestamp default current_timestamp,
+comentarios varchar(100),
+constraint fk_proveedor_detalle_prod foreign key(id_proveedor) references tbProveedor(id_proveedor),
+constraint fk_producto_detalle_prod foreign key (id_producto) references tbProducto(id_producto),
+constraint fk_sucursal_detalle_prod foreign key (id_sucursal) references tbSucursal(id_sucursal),
+constraint fk_usuario_detalle_prod foreign key (id_usuario) references tbUsuario(id_usuario)
+)engine InnoDB;
+
+create table if not exists tbPedido(
+id_pedido int not null primary key auto_increment,
+cant_producto int,
+fecha_hora timestamp default current_timestamp,
+id_proveedor int,
+id_producto int,
+id_sucursal int,
+id_usuario int,
+comentarios varchar(100),
+constraint fk_proveedor_pedido foreign key(id_proveedor) references tbProveedor(id_proveedor),
+constraint fk_producto_pedido foreign key(id_producto) references tbProducto(id_producto),
+constraint fk_sucursal_pedido foreign key(id_sucursal) references tbSucursal(id_sucursal),
+constraint fk_usuario_pedido foreign key(id_usuario) references tbUsuario(id_usuario)
+)engine InnoDB;
+
+create table if not exists tbPlatillo(
+id_platillo int not null primary key auto_increment,
+nombre_platillo varchar(60),
+precio_platillo decimal(18,2),
+costo_platillo decimal(18,2),
+id_subCategoria int,
+constraint fk_subCat_platillo foreign key(id_subCategoria) references tbscaPlatillo(id_subCategoria)
+)engine InnoDB;
+
+create table if not exists tbDetallePlatillo(
+id_detallePlatillo int not null primary key auto_increment,
+id_platillo int,
+id_producto int,
+cantidad_producto int,
+constraint fk_platillo_detallepla foreign key(id_platillo) references tbPlatillo(id_platillo),
+constraint fk_producto_detallepla foreign key(id_producto) references tbProducto(id_producto)
+)engine InnoDB;
+
+create table if not exists tbTipoBebida(
+id_tipoBebida int not null primary key auto_increment,
+tipo varchar(30)
+)engine InnoDB;
+
+create table if not exists tbBebida(
+id_bebida int not null primary key auto_increment,
+nombre_bebida varchar(50),
+id_tipoBebida int,
+precio_bebida decimal(18,2),
+constraint fk_tipoBebida_bebida foreign key(id_tipoBebida) references tbTipoBebida(id_tipoBebida)
+)engine InnoDB;
+
+create table if not exists tbTipoComplemento(
+id_tipoCom int not null primary key auto_increment,
+nombre varchar(50)
+)engine InnoDB;
+
+create table if not exists tbComplemento(
+id_complemento int not null primary key auto_increment,
+nombre_complemento varchar(50),
+id_tipoCom int,
+precio_complemento decimal(18,2),
+constraint fk_tipoCom_com foreign key(id_tipoCom) references tbTipoComplemento(id_tipoCom)
+)engine InnoDB;
+
+create table if not exists tbVenta(
+id_venta int not null primary key auto_increment,
+nombre_cliente varchar(80),
+dui_carnet varchar(20),
+nit varchar(16),
+dir varchar(300),
+tel varchar(15),
+id_usuario int,
+tipo_pago enum('TC','TD','E', 'CH'),
+fecha_hora timestamp default current_timestamp,
+venta_total decimal(18,2),
+constraint fk_usuario_venta foreign key(id_usuario) references tbUsuario(id_usuario)
+)engine InnoDB;
+
+create table if not exists tbDetalleVenta(
+id_detalleVenta int not null primary key auto_increment,
+id_venta int,
+id_platillo int,
+cantidad_platillo int,
+id_bebida int,
+cantidad_bebidas int,
+id_complemento int,
+cantidad_complemento int,
+precio_compra decimal(18,2),
+constraint fk_venta_dv foreign key(id_venta) references tbVenta(id_venta),
+constraint fk_platillo_dv foreign key(id_platillo) references tbPlatillo(id_platillo),
+constraint fk_complemento_dv foreign key(id_complemento) references tbComplemento(id_complemento)
+)engine InnoDB;
+
+create table if not exists tbRegistrosInicio(
+id_registro int not null primary key auto_increment,
+inv_inicial int,
+caja_inicial decimal(18,2),
+id_usuario int,
+fecha_login timestamp default current_timestamp,
+constraint fk_usuario_registro foreign key(id_usuario) references tbUsuario(id_usuario)
+)engine InnoDB;
+
+create table if not exists tbCierreDiario(
+id_cierre int not null primary key auto_increment,
+inv_cierre int,
+caja_cierre decimal(18,2),
+id_usuario int,
+fecha_logout timestamp default current_timestamp,
+constraint fk_usuario_cierre foreign key(id_usuario) references tbUsuario(id_usuario)
+)engine InnoDB;

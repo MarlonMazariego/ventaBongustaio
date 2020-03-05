@@ -1,6 +1,8 @@
 -- Modificaciones:
 
 -- 1. Tabla Detalle de producto: adición de campo valor_en_inv (valor de cada producto en el inventario total)
+--Ejecutar siguiente codigo para la creacion del campo anteriormente.
+alter table  tbDetalleProducto add valor_en_inv decimal(18,2);
 
 create table if not exists tbDetalleProducto(
 id_detalleProd int not null primary key auto_increment,

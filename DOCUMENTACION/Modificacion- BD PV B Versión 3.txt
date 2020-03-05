@@ -1,6 +1,10 @@
 
 -- Modificación de tablas agregando el campo estado varchar(50)
 
+--Ejecutar el siguiente script para ejecutar los cambios en las tablas
+alter table tbPedido add estado varchar(50);
+alter table  tbProducto add estado varchar(50);
+
 create table if not exists tbProducto(
 id_producto int not null primary key auto_increment,
 nombre_producto varchar(60),

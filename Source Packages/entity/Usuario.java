@@ -9,6 +9,6 @@ package Entity;
  *
  * @author claudia.pinedausam
  */
-public class Tiempo {
+public class Usuario {
     
 }

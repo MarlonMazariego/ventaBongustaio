@@ -28,7 +28,7 @@ public class Tiempo implements Serializable{
     
     @JoinColumn(name="id_tipoSucursal" , referencedColumnName = "id")
     @ManyToOne
-    private Tipo_sucursal id_tipoSucursal;
+    private TipoSucursal id_tipoSucursal;
 
     public int getId_tipo() {
         return id_tipo;
@@ -46,11 +46,11 @@ public class Tiempo implements Serializable{
         this.tipo = tipo;
     }
 
-    public Tipo_sucursal getId_tipoSucursal() {
+    public TipoSucursal getId_tipoSucursal() {
         return id_tipoSucursal;
     }
 
-    public void setId_tipoSucursal(Tipo_sucursal id_tipoSucursal) {
+    public void setId_tipoSucursal(TipoSucursal id_tipoSucursal) {
         this.id_tipoSucursal = id_tipoSucursal;
     }
 

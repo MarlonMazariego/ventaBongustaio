@@ -27,3 +27,24 @@ monto decimal(18,2),
 tipo tinyint(1),
 fecha date
 )engine InnoDB;
+
+
+-- 3. Creación de tabla para almacenar estados de cuenta(Cálculo Gap)
+create table if not exists tbEstados(
+	  id_estado int not null primary key auto_increment
+	  ventas decimal(18,2),
+    inv_inicial decimal(18,2),
+    compras decimal(18,2),
+    gst_compras decimal(18,2),
+    dev_compras decimal(18,2),
+    inv_final decimal(18,2),
+    g_ventas decimal(18,2),
+    g_adm decimal(18,2).
+    g_financ decimal(18,2),
+    isr decimal(18,2),
+    reserva decimal(18,2),
+    utilidad decimal(18,2),
+    inicio date,
+    cierre date,
+    comentario varchar(200)
+)ENGINE INNODB;

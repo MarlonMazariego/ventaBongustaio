@@ -15,21 +15,21 @@ import javax.faces.application.FacesMessage;
 public class CTipoComplemento implements Serializable {
 
     @EJB
-    private TipoComplementoFacadeLocal tipoComplementEJB;
+    private TipoComplementoFacadeLocal tipComEJB;
     private TipoComplemento tipoComplemento;
     private List<TipoComplemento> lista;
     private String msj = "";
 
     public TipoComplementoFacadeLocal getTipoComplementEJB() {
-        return tipoComplementEJB;
+        return tipComEJB;
     }
 
     public void setTipoComplementEJB(TipoComplementoFacadeLocal tipoComplementEJB) {
-        this.tipoComplementEJB = tipoComplementEJB;
+        this.tipComEJB = tipoComplementEJB;
     }
 
     public List<TipoComplemento> getLista() {
-        lista = tipoComplementEJB.findAll();
+        lista = tipComEJB.findAll();
         return lista;
     }
 
@@ -40,14 +40,14 @@ public class CTipoComplemento implements Serializable {
     @PostConstruct
     public void init() {
         this.tipoComplemento = new TipoComplemento();
-        lista = tipoComplementEJB.findAll();
+        lista = tipComEJB.findAll();
        
     }
 
     public void create() {
         FacesMessage mensa;
         try {
-           tipoComplementEJB.create(tipoComplemento);
+           tipComEJB.create(tipoComplemento);
            msj = "Datos guardados correctamente";
            mensa = new FacesMessage(FacesMessage.SEVERITY_INFO, "Completado", msj);
            init();
@@ -60,7 +60,7 @@ public class CTipoComplemento implements Serializable {
     
     public void controlAll(){
         try {
-            lista = tipoComplementEJB.findAll();
+            lista = tipComEJB.findAll();
         } catch (Exception e) {
         }
     }
@@ -68,7 +68,7 @@ public class CTipoComplemento implements Serializable {
     public  void  delete(TipoComplemento tc){
         FacesMessage mensa;
         try {
-            tipoComplementEJB.delete(tc);
+            tipComEJB.delete(tc);
             msj = "Datos eliminados correctamente";
             mensa = new FacesMessage(FacesMessage.SEVERITY_INFO, "Completado", msj);
             
@@ -82,19 +82,20 @@ public class CTipoComplemento implements Serializable {
     public  void  update(){
         FacesMessage mensa;
         try {
-            tipoComplementEJB.edit(tipoComplemento);
-            msj = "Dat  os actualizados";
+            tipComEJB.edit(tipoComplemento);
+            msj = "Datos actualizados";
             mensa = new FacesMessage(FacesMessage.SEVERITY_INFO, "Completado", msj);
+            init();
         } catch (Exception e) {
-              msj = "Error al Eliminar"+e.getMessage();
+              msj = "Error al actualizar"+e.getMessage();
             System.out.println("Error"+e.getMessage());
             mensa = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", msj);
         }
     }
     public  void  find(TipoComplemento tc){
         try {
-            tipoComplemento = tipoComplementEJB.find(tc.getId_tipoCom());
-            tipoComplementEJB.find(tc.getId_tipoCom());
+            tipoComplemento = tipComEJB.find(tc.getId_tipoCom());
+            tipComEJB.find(tc.getId_tipoCom());
         } catch (Exception e) {
         }
     }

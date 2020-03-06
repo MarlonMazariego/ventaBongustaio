@@ -251,17 +251,19 @@ inv_inicial int,
 caja_inicial decimal(18,2),
 id_usuario int,
 fecha_login timestamp default current_timestamp,
+tipo enum('Entrada', 'Cierre') not null,
 constraint fk_usuario_registro foreign key(id_usuario) references tbUsuario(id_usuario)
 )engine InnoDB;
 
-create table if not exists tbCierreDiario(
+/*TABLA SUPRIMIDA*/
+/*create table if not exists tbCierreDiario(
 id_cierre int not null primary key auto_increment,
 inv_cierre int,
 caja_cierre decimal(18,2),
 id_usuario int,
 fecha_logout timestamp default current_timestamp,
 constraint fk_usuario_cierre foreign key(id_usuario) references tbUsuario(id_usuario)
-)engine InnoDB;
+)engine InnoDB*/
 
 
 create table if not exists tbMovimiento(

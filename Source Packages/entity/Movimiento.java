@@ -36,6 +36,9 @@ public class Movimiento implements Serializable{
     @Temporal(TemporalType.DATE)
     @Column(name = "fecha")
     private Date fecha;
+    
+    @Column(name = "cantidad")
+    private int cantidad;
 
     public Movimiento() {
     }
@@ -70,6 +73,14 @@ public class Movimiento implements Serializable{
 
     public void setFecha(Date fecha) {
         this.fecha = fecha;
+    }
+    
+    public void setFecha(Date fecha) {
+        this.fecha = fecha;
+    }
+
+    public int getCantidad() {
+        return cantidad;
     }
 
     @Override

@@ -1,9 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package Entity;
+package entity;
 
 import java.io.Serializable;
 import javax.persistence.Column;
@@ -12,7 +7,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -49,18 +43,21 @@ public class Persona implements Serializable{
     private String email;
     
     @Column(name="genero")
-    private int genero;
+    private String genero;
     
     @Column(name="salario_asignado")
     private double salario_asignado;
     
-    @JoinColumn(name="id_cargo", referencedColumnName = "id")
+    @JoinColumn(name="id_cargo", referencedColumnName = "id_cargo")
     @ManyToOne
     private Cargo id_cargo;
     
-    @JoinColumn(name="id_sucursal" ,referencedColumnName = "id")
+    @JoinColumn(name="id_sucursal" ,referencedColumnName = "id_sucursal")
     @ManyToOne
     private Sucursal id_sucursal;
+
+    public Persona() {
+    }
 
     public int getId_persona() {
         return id_persona;
@@ -134,11 +131,11 @@ public class Persona implements Serializable{
         this.email = email;
     }
 
-    public int getGenero() {
+    public String getGenero() {
         return genero;
     }
 
-    public void setGenero(int genero) {
+    public void setGenero(String genero) {
         this.genero = genero;
     }
 
@@ -167,14 +164,9 @@ public class Persona implements Serializable{
     }
 
     @Override
-    public String toString() {
-        return "Persona{" + "id_persona=" + id_persona + '}';
-    }
-
-    @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 43 * hash + this.id_persona;
+        int hash = 3;
+        hash = 59 * hash + this.id_persona;
         return hash;
     }
 
@@ -195,7 +187,10 @@ public class Persona implements Serializable{
         }
         return true;
     }
-    
-    
-    
+
+    @Override
+    public String toString() {
+        return "Persona{" + "id_persona=" + id_persona + '}';
+    }
+        
 }

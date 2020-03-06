@@ -21,4 +21,6 @@ public interface PedidoFacadeLocal {
     void remove(Pedido pedido);
     
     Pedido find(Object id);
+    
+    Persona find(Object id);
 }

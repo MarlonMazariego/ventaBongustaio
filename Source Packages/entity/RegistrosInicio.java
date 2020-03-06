@@ -28,7 +28,7 @@ public class RegistrosInicio implements Serializable{
     
     @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario")
     @ManyToMany
-    private  int idUsuario;
+    private  Usuario idUsuario;
     
     @Temporal(TemporalType.TIME)
     @Column(name = "fecha_login")

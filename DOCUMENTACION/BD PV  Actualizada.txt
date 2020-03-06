@@ -269,6 +269,7 @@ constraint fk_usuario_cierre foreign key(id_usuario) references tbUsuario(id_usu
 create table if not exists tbMovimiento(
 id_movimiento int not null primary key auto_increment,
 monto decimal(18,2),
+cantidad int not null,
 tipo tinyint(1),
 fecha date
 )engine InnoDB;

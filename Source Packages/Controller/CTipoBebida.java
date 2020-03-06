@@ -16,7 +16,7 @@ import javax.faces.context.FacesContext;
 public class CTipoBebida implements Serializable {
 
     @EJB
-    private TipoBebidaFacade tipBebEJB;
+    private TipoBebidaFacadeLocal tipBebEJB;
     private TipoBebida tipBeb;
     private List<TipoBebida> lista;
     private String msj;

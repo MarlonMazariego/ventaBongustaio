@@ -33,7 +33,10 @@ public class RegistrosInicio implements Serializable{
     @Temporal(TemporalType.TIME)
     @Column(name = "fecha_login")
     private  Date fecha_login;
-
+    
+    @Column(name = "tipo", nullable = false)
+    private short tipo;
+    
     public RegistrosInicio() {
     }
 
@@ -76,6 +79,15 @@ public class RegistrosInicio implements Serializable{
     public void setFecha_login(Date fecha_login) {
         this.fecha_login = fecha_login;
     }
+    
+    public short getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(short tipo) {
+        this.tipo = tipo;
+    }
+    
 
     @Override
     public int hashCode() {

@@ -251,7 +251,7 @@ inv_inicial int,
 caja_inicial decimal(18,2),
 id_usuario int,
 fecha_login timestamp default current_timestamp,
-tipo enum('Entrada', 'Cierre') not null,
+tipo enum('E', 'C') not null,
 constraint fk_usuario_registro foreign key(id_usuario) references tbUsuario(id_usuario)
 )engine InnoDB;
 

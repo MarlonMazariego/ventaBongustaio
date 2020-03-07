@@ -12,7 +12,7 @@ import javax.persistence.PersistenceContext;
 @Stateless
 public class BebidaFacade extends Abstract<Bebida> implements BebidaFacadeLocal{
     
-    @PersistenceContext(unitName = "")
+     @PersistenceContext(unitName = "pvb")
     
      private EntityManager em;
     

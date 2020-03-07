@@ -17,7 +17,7 @@ public class Usuario implements Serializable{
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id_usuaro;
+    private int id_usuario;
     
     @Column(name = "nickName")
     private String nickName;
@@ -25,20 +25,23 @@ public class Usuario implements Serializable{
     @Column(name = "pass")
     private String pass;
     
-    @JoinColumn(name = "id_persona", referencedColumnName = "id_persona")
     @ManyToOne
+    @JoinColumn(name = "id_persona", referencedColumnName = "id_persona")    
     private Persona id_persona;
     
-    @JoinColumn(name = "id_rolesUsuario", referencedColumnName = "id_rolesUsuario")
-    @ManyToOne
+     @ManyToOne
+    @JoinColumn(name = "id_rolesUsuario", referencedColumnName = "id_rolesUsuario")   
     private RolesUsuario id_rolesUsuario;
 
-    public int getId_usuaro() {
-        return id_usuaro;
+    public Usuario() {
     }
 
-    public void setId_usuaro(int id_usuaro) {
-        this.id_usuaro = id_usuaro;
+    public int getId_usuario() {
+        return id_usuario;
+    }
+
+    public void setId_usuario(int id_usuario) {
+        this.id_usuario = id_usuario;
     }
 
     public String getNickName() {
@@ -75,8 +78,8 @@ public class Usuario implements Serializable{
 
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 97 * hash + this.id_usuaro;
+        int hash = 7;
+        hash = 23 * hash + this.id_usuario;
         return hash;
     }
 
@@ -92,7 +95,7 @@ public class Usuario implements Serializable{
             return false;
         }
         final Usuario other = (Usuario) obj;
-        if (this.id_usuaro != other.id_usuaro) {
+        if (this.id_usuario != other.id_usuario) {
             return false;
         }
         return true;
@@ -100,9 +103,7 @@ public class Usuario implements Serializable{
 
     @Override
     public String toString() {
-        return "Usuario{" + "id_usuaro=" + id_usuaro + '}';
+        return "Usuario{" + "id_usuario=" + id_usuario + '}';
     }
     
-    
-    
-}
+    }

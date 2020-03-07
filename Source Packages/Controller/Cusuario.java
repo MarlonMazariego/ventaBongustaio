@@ -111,6 +111,7 @@ private RolesUsuario rolUsu;
         FacesContext.getCurrentInstance().addMessage(null, message);
     }
     
+    //Metodo para asignar un empleado al usuario al modificar o crear uno nuevo
     public void assign(Persona pers){
         try {            
             per = pers;

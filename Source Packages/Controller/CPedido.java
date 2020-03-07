@@ -22,7 +22,7 @@ import javax.inject.Named;
 @SessionScoped
 public class CPedido implements Serializable{
 
-@EJB
+ @EJB
 private PedidoFacadeLocal pedidoEJB;
 private Pedido ped;
 private List<Pedido> lista;
@@ -159,7 +159,7 @@ private String msj;
             this.prov.setId_proveedor(id.getId_proveedor().getId_proveedor());
             this.prod.setId_producto(id.getId_producto().getId_producto());
             this.suc.setId_sucursal(id.getId_sucursal().getId_sucursal());
-            this.usu.setId_usuaro(id.getId_usuario().getId_usuaro());
+            this.usu.setId_usuario(id.getId_usuario().getId_usuario());
             this.ped = id;
         } catch (Exception e) {
             System.out.println("No carga por " +e.getMessage());

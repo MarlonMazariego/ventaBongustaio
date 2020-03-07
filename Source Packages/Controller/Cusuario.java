@@ -5,6 +5,7 @@
  */
 package controller;
 
+
 import ejb.UsuarioFacadeLocal;
 import entity.Persona;
 import entity.RolesUsuario;
@@ -66,6 +67,8 @@ private RolesUsuario rolUsu;
     @PostConstruct
     public void init(){
         usu = new Usuario();
+        rolUsu = new RolesUsuario();
+        per = new Persona();
     }
     
     
@@ -106,5 +109,28 @@ private RolesUsuario rolUsu;
             message = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Error","Error al Eliminar");
         }
         FacesContext.getCurrentInstance().addMessage(null, message);
+    }
+    
+    public void assign(Persona pers){
+        try {            
+            per = pers;
+            usu.setId_persona(pers);
+            System.out.println(per.getId_persona());            
+        } catch (Exception e) {
+            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Error",e.getMessage());
+            FacesContext.getCurrentInstance().addMessage(null, message);
+        }
+    }    
+    
+    public void find(Usuario us){
+        try {
+            usu = usuarioEJB.find(us.getId_usuario());
+            per.setId_persona(usu.getId_persona().getId_persona());
+            rolUsu.setId_rolesUsuario(usu.getId_rolesUsuario().getId_rolesUsuario());
+            usuarioEJB.find(usu.getId_usuario());
+        } catch (Exception e) {
+            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR,"Error",e.getMessage());
+            FacesContext.getCurrentInstance().addMessage(null, message);
+        }
     }
 }

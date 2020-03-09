@@ -52,24 +52,79 @@ public class CRegistroInicio implements Serializable {
     public void clear(){
     registro = new RegistrosInicio();
     }
-  public void consultarAll(){
-  lista = registroEJB.findAll();
-  } 
   
-  public void save(){
+ public void refresh() {
+        this.lista = registroEJB.findAll();
+    }
   
-  registroEJB.create(registro);
-  }
-  
-  public void update(){
-  
-      registroEJB.edit(registro);
-  }
-  public void delete(RegistrosInicio id){
-  registroEJB.delete(id);
-  }
-  
-  public void leerId(RegistrosInicio id){
-  this.registro =  id;
-  }
+
+    public void save() {
+        FacesMessage mensa = null;
+        try {
+            this.reg.setIdUsuario(usu);
+            this.registroEJB.create(reg);
+            init();
+            refresh();
+            this.msj = "Registro guardado correctamente";
+            mensa = new FacesMessage(FacesMessage.SEVERITY_INFO, "Completado", msj);
+        } catch (Exception e) {
+            e.printStackTrace();
+            this.msj = "Ha ocurrido un error mientras se guardaba el registro";
+            System.err.println("Error al ingresar registro : " + e.getMessage());
+            mensa = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ups", msj);
+        }
+        FacesContext.getCurrentInstance().addMessage(msj, mensa);
+    }
+
+    public void update() {
+        FacesMessage mensa = null;
+        try {
+            this.reg.setIdUsuario(usu);
+            this.registroEJB.edit(reg);
+            init();
+            refresh();
+            this.msj = "Registro guardado correctamente";
+            mensa = new FacesMessage(FacesMessage.SEVERITY_INFO, "Completado", msj);
+        } catch (Exception e) {
+            e.printStackTrace();
+            this.msj = "Ha ocurrido un error mientras se guardaba el registro";
+            System.err.println("Error al ingresar registro : " + e.getMessage());
+            mensa = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ups", msj);
+        }
+        FacesContext.getCurrentInstance().addMessage(msj, mensa);
+    }
+
+    public void delete(RegistrosInicio id) {
+        FacesMessage mensa = null;
+        try {
+            this.registroEJB.delete(id);
+            init();
+            refresh();
+            this.msj = "Registro eliminado correctamente";
+            mensa = new FacesMessage(FacesMessage.SEVERITY_INFO, "Completado", msj);
+        } catch (Exception e) {
+            e.printStackTrace();
+            this.msj = "Ha ocurrido un error mientras se eliminaba el registro";
+            System.err.println("Error al ingresar registro : " + e.getMessage());
+            mensa = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ups", msj);
+        }
+        FacesContext.getCurrentInstance().addMessage(msj, mensa);
+    }
+
+    public void findID(RegistrosInicio id) {
+        FacesMessage mensa = null;
+        try {
+            this.usu.setId_usuario(id.getIdUsuario().getId_usuario());
+            this.reg = id;
+            this.msj = "Registro cargado correctamente";
+            mensa = new FacesMessage(FacesMessage.SEVERITY_INFO, "Completado", msj);
+        } catch (Exception e) {
+            e.printStackTrace();
+            this.msj = "No se pudo cargar la información...";
+            System.err.println("Error al ingresar registro : " + e.getMessage());
+            mensa = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Ups", msj);
+        }
+        FacesContext.getCurrentInstance().addMessage(msj, mensa);
+    }
+
 }

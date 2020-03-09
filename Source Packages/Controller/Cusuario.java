@@ -134,4 +134,44 @@ private RolesUsuario rolUsu;
             FacesContext.getCurrentInstance().addMessage(null, message);
         }
     }
+    
+       /*MÈTODO PARA INICIAR SESIÒN, en caso de dudas preguntar a Fernando*/
+    public String login() {
+        Usuario usuario;
+        String ruta = null;
+        System.out.println("HOLAAA");
+        try {
+            this.usu.setId_rolesUsuario(rolUsu);
+            usuario = usuarioEJB.login(usu);
+            int rol = usuario.getId_usuario();
+            /*OBSERVAR EL ROL*/
+            System.out.println(rol);
+
+            switch (rol) {
+                case 1:
+                    FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("UsuarioTI", usuario);
+                    ruta = "/views/AdminSU/home?faces-redirect=true";
+                    break;
+                case 2:
+                    FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("UsuarioAD", usuario);
+                    ruta = "/views/Admin/home?faces-redirect=true";
+                    break;
+                case 3:
+                    FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("UsuarioCO", usuario);
+                    ruta = "/views/Users/home?faces-redirect=true";
+                    break;
+                default:
+                    FacesContext.getCurrentInstance().addMessage(
+                            null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Aviso", "Revise sus datos e intente nuevamente")
+                    );
+                    break;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            FacesContext.getCurrentInstance().addMessage(
+                    null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Aviso", "Error : " + e.getMessage())
+            );
+        }
+        return ruta;
+    }
 }

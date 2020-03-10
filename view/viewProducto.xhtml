@@ -1,0 +1,182 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Punto de Venta Bongustaio</title>       
+    </h:head>
+    <h:body>
+        <br/>
+        <p:growl id="msj" showDetail="true"/>
+
+        <!--Para la barra de menú -->
+        <!--Es funcional para la opción de guardar, lo demás está de forma estética por el momento -->
+        <h:form>  
+            <p:toolbar id="tb">
+                <p:toolbarGroup align="right">
+                    <p:menubar>
+                        <p:submenu label="Archivo" icon="pi pi-file">
+                            <p:menuitem value="Registrar producto" onclick="PF('form').show();" icon="pi pi-plus"/>
+                        </p:submenu>
+                        <p:submenu label="Editar" icon="pi pi-pencil">
+                            <p:menuitem value="Por id" url="#" icon="pi pi-angle-double-left" />
+                        </p:submenu>
+                        <p:submenu label="Help" icon="pi pi-question">
+                            <p:menuitem value="Contents" url="#" />
+                            <p:submenu label="Search" icon="pi pi-search">
+                                <p:submenu label="Text">
+                                    <p:menuitem value="Workspace" url="#" />
+                                </p:submenu>
+                                <p:menuitem value="File" url="#" />
+                            </p:submenu>
+                        </p:submenu>
+                        <p:submenu label="Acciones" icon="pi pi-cog">
+                            <p:menuitem value="Acción 1" url="#" icon="pi pi-angle-double-left" />
+                            <p:menuitem value="Acción 2" url="#" icon="pi pi-angle-double-left" />
+                        </p:submenu>
+                        <p:menuitem value="Salir" icon="pi pi-times"/>
+
+                        <f:facet name="options">
+                            <p:inputText style="margin:1px 10px 1px 1px;" placeholder="Buscar"/>
+                            <p:commandButton type="button" value="Cerrar sesión" icon="pi pi-home" />
+                        </f:facet>
+                    </p:menubar>
+                </p:toolbarGroup>
+            </p:toolbar>
+            <p:sticky target="tb" />
+        </h:form>
+
+
+        <div class="ui-g-1"></div>
+        <div class="ui-g-10">
+            <p:fieldset legend="Inventario" id="fields">
+                <h:form id="fProducto">
+                    <p:dataTable var="lis" value="#{cProducto.lista}" rows="10" id="data" stickyHeader="true"
+                                 paginator="true"
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                                 rowsPerPageTemplate="5,10,15" rowIndexVar="i" widgetVar="tbProducto">
+
+                        <f:facet name="header">
+                            Productos
+                        </f:facet>
+                        <f:facet name="paginatorTopLeft">
+                            <p:commandButton icon="pi pi-refresh" action="#{cProducto.clear()}" update="fProducto"/>
+                        </f:facet>
+                        <f:facet name="paginatorBottomLeft">
+                            <p:commandButton icon="pi pi-refresh" action="#{cProducto.clear()}" update="fProducto"/>
+                        </f:facet>
+                        <p:column headerText="Id" footerText="Id" sortBy="#{lis.id_producto}">
+                            <h:outputText value="#{i + 1}"/>
+                        </p:column>
+                        <p:column headerText="Nombre del producto" footerText="Nombre del producto">
+                            <h:outputText value="#{lis.nombre_prodcuto}"/>
+                        </p:column>
+                        <p:column headerText="Descripción" footerText="Descripción">
+                            <h:outputText value="#{lis.descripcion}"/>
+                        </p:column>
+                        <p:column headerText="Unidad de medida" footerText="Unidad de medida">
+                            <h:outputText value="#{lis.unidad_medida}"/>
+                        </p:column>
+                        <p:column headerText="Sub categoría" footerText="Sub categoría">
+                            <h:outputText value="#{lis.id_sibCategoria.tipoPlatillo}"/>
+                        </p:column>
+                        <p:column headerText="Stock min" footerText="Stock min">
+                            <h:outputText value="#{lis.stock_min}"/>
+                        </p:column>
+                        <p:column headerText="Existencias" footerText="Existencias">
+                            <h:outputText value="#{lis.existencias}"/>
+                        </p:column>
+                        <p:column headerText="Stock max" footerText="Stock max">
+                            <h:outputText value="#{lis.stock_max}"/>
+                        </p:column>
+                        <p:column headerText="Estado" footerText="Estado">
+                            <h:outputText value="#{lis.estado}"/>
+                        </p:column>
+                        <p:column headerText="Herramientas" footerText="Herramientas" style="text-align: center">
+                            <p:commandButton type="button" value="Opciones" id="slidebutton" icon="pi pi-pencil"/>
+                            <p:slideMenu trigger="slidebutton" overlay="true" my="left top" at="left bottom" style="width: 180px;">
+                                <p:menuitem value="Eliminar" action="#{cProducto.delete(lis)}"  update=":msj :fProducto:data" icon="pi pi-trash">
+                                    <p:confirm header="Confirmation" message="¿Desea eliminar el registro?" icon="pi pi-exclamation-triangle" />
+                                </p:menuitem>
+                                <p:menuitem value="Modificar" action="#{cProducto.find(lis)}"  update=":pro_datos :msj" oncomplete="PF('pro').show();" icon="pi pi-spinner"/>
+                            </p:slideMenu>
+                        </p:column>
+                    </p:dataTable>
+                    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                        <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+                        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="pi pi-times" />
+                    </p:confirmDialog>  
+                </h:form>
+            </p:fieldset>
+        </div>   
+
+        <!--Modal para guardar -->
+        <h:form id="formulario">
+            <p:dialog header="Especificaciones del producto" widgetVar="form" modal="true" resizable="false" showEffect="clip">
+                <p:ajax event="close" listener="#{cProducto.clear()}" update=":formulario"/>
+                <p:panelGrid columns="2">
+                    <p:outputLabel value="Nombre del producto"/>
+                    <p:keyboard value="#{cProducto.pro.nombre_prodcuto}" required="true"/>
+                    <p:outputLabel value="Descripción"/>
+                    <p:keyboard value="#{cProducto.pro.descripcion}" required="true"/>
+                    <p:outputLabel value="Unidad de medida"/>
+                    <p:keyboard value="#{cProducto.pro.unidad_medida}" required="true"/>
+                    <p:outputLabel value="Sub Categoría"/>
+                    <p:selectOneMenu value="#{cProducto.pro.id_sibCategoria}" required="true">
+                        <f:selectItems var="sca" value="#{cScaPlatillo.lista}" itemLabel="#{sca.tipo}" itemValue="#{sca.id_subCategoria}"/>
+                    </p:selectOneMenu>
+                    <p:outputLabel value="Stock mínimo"/>
+                    <p:keyboard value="#{cProducto.pro.stock_min}" required="true"/>
+                    <p:outputLabel value="Existencias"/>
+                    <p:keyboard value="#{cProducto.pro.existencias}" required="true"/>
+                    <p:outputLabel value="Stock máximo"/>
+                    <p:keyboard value="#{cProducto.pro.stock_max}" required="true"/>
+                    <p:outputLabel value="Costo unitario"/>
+                    <p:keyboard value="#{cProducto.pro.costo_unitario}" required="true"/>
+                    <p:outputLabel value="Estado"/>
+                    <p:keyboard value="#{cProducto.pro.estado}" required="true"/>
+                    <p:commandButton value="Guardar" actionListener="#{cProducto.save()}" update=":fProducto:data :msj"/>
+                </p:panelGrid>
+            </p:dialog>
+        </h:form>
+
+        <!--Modal para modificar-->
+        <p:dialog header="Especificaciones del producto" widgetVar="pro" id="pro_datos">
+            <p:panelGrid columns="2">
+                <h:form>
+                    <p:outputLabel value="Id"/>
+                    <p:keyboard value="#{cProducto.pro.id_producto}" disabled="true"/>
+                    <p:outputLabel value="Nombre del producto"/>
+                    <p:keyboard value="#{cProducto.pro.nombre_prodcuto}" required="true"/>
+                    <p:outputLabel value="Descripción"/>
+                    <p:keyboard value="#{cProducto.pro.descripcion}" required="true"/>
+                    <p:outputLabel value="Unidad de medida"/>
+                    <p:keyboard value="#{cProducto.pro.unidad_medida}" required="true"/>
+                    <p:outputLabel value="Sub Categoría"/>
+                    <p:selectOneMenu value="#{cProducto.pro.id_sibCategoria}" required="true">
+                        <f:selectItems var="sca" value="#{cScaPlatillo.lista}" itemLabel="#{sca.tipo}" itemValue="#{sca.id}"/>
+                    </p:selectOneMenu>
+                    <p:outputLabel value="Stock mínimo"/>
+                    <p:keyboard value="#{cProducto.pro.stock_min}" required="true"/>
+                    <p:outputLabel value="Existencias"/>
+                    <p:keyboard value="#{cProducto.pro.existencias}" required="true"/>
+                    <p:outputLabel value="Stock máximo"/>
+                    <p:keyboard value="#{cProducto.pro.stock_max}" required="true"/>
+                    <p:outputLabel value="Costo unitario"/>
+                    <p:keyboard value="#{cProducto.pro.costo_unitario}" required="true"/>
+                    <p:outputLabel value="Estado"/>
+                    <p:keyboard value="#{cProducto.pro.estado}" required="true"/>
+                    <p:commandButton value="Modificar" actionListener="#{cProducto.update()}" oncomplete="PF('pro').hide();" update=":fProducto:data :msj"/>
+                    <p:commandButton value="Cancelar" oncomplete="PF('pro').hide();" update=":fProducto:data" immediate="true"/>
+                </h:form>
+            </p:panelGrid>
+        </p:dialog>
+
+
+
+    </h:body>
+</html>
+

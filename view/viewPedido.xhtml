@@ -1,0 +1,197 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Punto de Venta Bongustaio</title>     
+    </h:head>
+    <h:body>
+<br/>
+        <p:growl id="msj" showDetail="true"/>
+
+        <!--Para la barra de menú -->
+        <!--Es funcional para la opción de guardar, lo demás está de forma estética por el momento -->
+        <h:form>  
+            <p:toolbar id="tb">
+                <p:toolbarGroup align="right">
+                    <p:menubar>
+                        <p:submenu label="Archivo" icon="pi pi-file">
+                            <p:menuitem value="Ingresar pedido" onclick="PF('form').show();" icon="pi pi-plus"/>
+                        </p:submenu>
+                        <p:submenu label="Editar" icon="pi pi-pencil">
+                            <p:menuitem value="Por id" url="#" icon="pi pi-angle-double-left" />
+                        </p:submenu>
+                        <p:submenu label="Help" icon="pi pi-question">
+                            <p:menuitem value="Contents" url="#" />
+                            <p:submenu label="Search" icon="pi pi-search">
+                                <p:submenu label="Text">
+                                    <p:menuitem value="Workspace" url="#" />
+                                </p:submenu>
+                                <p:menuitem value="File" url="#" />
+                            </p:submenu>
+                        </p:submenu>
+                        <p:submenu label="Acciones" icon="pi pi-cog">
+                            <p:menuitem value="Acción 1" url="#" icon="pi pi-angle-double-left" />
+                            <p:menuitem value="Acción 2" url="#" icon="pi pi-angle-double-left" />
+                        </p:submenu>
+                        <p:menuitem value="Salir" icon="pi pi-times"/>
+
+                        <f:facet name="options">
+                            <p:inputText style="margin:1px 10px 1px 1px;" placeholder="Buscar"/>
+                            <p:commandButton type="button" value="Cerrar sesión" icon="pi pi-home" />
+                        </f:facet>
+                    </p:menubar>
+                </p:toolbarGroup>
+            </p:toolbar>
+            <p:sticky target="tb" />
+        </h:form>
+
+
+        <div class="ui-g-1"></div>
+        <div class="ui-g-10">
+            <p:fieldset legend="Abastecimiento" id="fiels">
+                <h:form id="fPedido">
+                    <p:dataTable var="lis" value="#{cPedido.lista}" rows="10" id="data" stickyHeader="true"
+                                 paginator="true"
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                                 rowsPerPageTemplate="5,10,15" rowIndexVar="i" widgetVar="tbPedido">
+
+                        <f:facet name="header">
+                            Gestión de compras
+                        </f:facet>
+                        <f:facet name="paginatorTopLeft">
+                            <p:commandButton icon="pi pi-refresh" action="#{cPedido.clear()}" update="fPedido"/>
+                        </f:facet>
+                        <f:facet name="paginatorBottomLeft">
+                            <p:commandButton icon="pi pi-refresh" action="#{cPedido.clear()}" update="fPedido"/>
+                        </f:facet>
+                        <p:column headerText="Id" footerText="Id" sortBy="#{lis.id_pedido}">
+                            <h:outputText value="#{i + 1}"/>
+                        </p:column>
+
+                        <p:column headerText="Cantidad de pedido" footerText="Cantidad de pedido">
+                            <h:outputText value="#{lis.cant_producto}"/>
+                        </p:column>
+                        <p:column headerText="Fecha-Hora" footerText="Fecha-Hora">
+                            <h:outputText value="#{lis.cant_producto}">
+                                <f:convertDateTime type="both"/>
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="Proveedor" footerText="Proveedor">
+                            <h:outputText value="#{lis.id_proveedor.nombre}"/>
+                        </p:column>
+                        <p:column headerText="Producto" footerText="Producto">
+                            <h:outputText value="#{lis.id_producto.nombre_prodcuto}-#{lis.id_producto.unidad_medida}"/>
+                        </p:column>
+                        <p:column headerText="Sucursal" footerText="Sucursal">
+                            <h:outputText value="#{lis.id_sucursal.nombre}"/>
+                        </p:column>
+                        <p:column headerText="Usuario" footerText="Usuario">
+                            <h:outputText value="#{lis.id_usuario.nickName}"/>
+                        </p:column>
+                        <p:column headerText="Comentarios" footerText="Comentarios">
+                            <h:outputText value="#{lis.comentarios}"/>
+                        </p:column>
+                        <p:column headerText="Estado" footerText="Estado">
+                            <h:outputText value="#{lis.estado}"/>
+                        </p:column>
+                        <p:column headerText="Herramientas" footerText="Herramientas" style="text-align: center">
+                            <p:commandButton type="button" value="Opciones" id="slidebutton" icon="pi pi-pencil"/>
+                            <p:slideMenu trigger="slidebutton" overlay="true" my="left top" at="left bottom" style="width: 180px;">
+                                <p:menuitem value="Eliminar" action="#{cPedido.delete(lis)}"  update=":msj :fPedido:data" icon="pi pi-trash">
+                                    <p:confirm header="Confirmation" message="¿Desea eliminar el registro?" icon="pi pi-exclamation-triangle" />
+                                </p:menuitem>
+                                <p:menuitem value="Modificar" action="#{cPedido.find(lis)}"  update=":p_datos :msj" oncomplete="PF('p').show();" icon="pi pi-spinner"/>
+                            </p:slideMenu>
+                        </p:column>
+                    </p:dataTable>
+                    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                        <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+                        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="pi pi-times" />
+                    </p:confirmDialog>  
+                </h:form>
+            </p:fieldset> 
+        </div>
+
+
+
+        <!--Modal para guardar -->
+        <h:form id="formulario">
+            <p:dialog header="Datos del pedido" widgetVar="form" modal="true" resizable="false" showEffect="clip">
+                <p:ajax event="close" listener="#{cPedido.clear()}" update=":formulario"/>
+                <p:panelGrid columns="2">
+                    <p:outputLabel value="Cantidad de pedido"/>
+                    <p:keyboard value="#{cPedido.ped.cant_producto}" required="true"/>
+                    <p:outputLabel value="Fecha-hora"/>
+                    <p:calendar value="#{cPedido.ped.fecha_hora}" required="true"/>
+                    <p:outputLabel value="Proveedor"/>
+                    <p:selectOneMenu value="#{cPedido.ped.id_proveedor}">
+                        <f:selectItems var="prov" value="#{cProveedor.lista}" itemLabel="#{prov.nombre}" itemValue="#{prov.id_proveedor}"/>
+                    </p:selectOneMenu>
+                    <p:outputLabel value="Producto"/>
+                    <p:selectOneMenu value="#{cPedido.ped.id_producto}">
+                        <f:selectItems var="prod" value="#{cProducto.lista}" itemLabel="#{prod.nombre_prodcuto}-#{prod.unidad_medida}" itemValue="#{prov.id_producto}"/>
+                    </p:selectOneMenu>
+                    <p:outputLabel value="Sucursal"/>
+                    <p:selectOneMenu value="#{cPedido.ped.id_sucursal}">
+                        <f:selectItems var="suc" value="#{cSucursal.lista}" itemLabel="#{suc.nombre}" itemValue="#{suc.id_sucursal}"/>
+                    </p:selectOneMenu>
+                    <p:outputLabel value="Usuario"/>
+                    <p:selectOneMenu value="#{cPedido.ped.id_usuario}">
+                        <f:selectItems var="usu" value="#{cUsuario.lista}" itemLabel="#{usu.nickName}" itemValue="#{usu.id_usuario}"/>
+                    </p:selectOneMenu>
+                    <p:outputLabel value="Comentarios"/>
+                    <p:keyboard value="#{cPedido.ped.comentarios}"/>
+                    <p:outputLabel value="Estado"/>
+                    <p:keyboard value="#{cPedido.ped.estado}" required="true"/>
+                    <p:commandButton value="Guardar" actionListener="#{cPedido.save()}" update=":fPedido:data :msj"/>
+                </p:panelGrid>  
+            </p:dialog>
+        </h:form>
+
+
+        <!--Modal para modificar-->
+        <p:dialog header="Datos del pedido" widgetVar="p" id="p_datos">
+            <p:panelGrid columns="2">
+                <h:form>
+                    <p:outputLabel value="Id"/>
+                    <p:keyboard value="#{cPedido.ped.id_pedido}" disabled="true"/>
+                    <p:outputLabel value="Cantidad de pedido"/>
+                    <p:keyboard value="#{cPedido.ped.cant_producto}" required="true"/>
+                    <p:outputLabel value="Fecha-hora"/>
+                    <p:calendar value="#{cPedido.ped.fecha_hora}" required="true"/>
+                    <p:outputLabel value="Proveedor"/>
+                    <p:selectOneMenu value="#{cPedido.ped.id_proveedor}">
+                        <f:selectItems var="prov" value="#{cProveedor.lista}" itemLabel="#{prov.nombre}" itemValue="#{prov.id}"/>
+                    </p:selectOneMenu>
+                    <p:outputLabel value="Producto"/>
+                    <p:selectOneMenu value="#{cPedido.ped.id_producto}">
+                        <f:selectItems var="prod" value="#{cProducto.lista}" itemLabel="#{prod.nombre_prodcuto}-#{prod.unidad_medida}" itemValue="#{prov.id}"/>
+                    </p:selectOneMenu>
+                    <p:outputLabel value="Sucursal"/>
+                    <p:selectOneMenu value="#{cPedido.ped.id_sucursal}">
+                        <f:selectItems var="suc" value="#{cSucursal.lista}" itemLabel="#{suc.nombre}" itemValue="#{suc.id}"/>
+                    </p:selectOneMenu>
+                    <p:outputLabel value="Usuario"/>
+                    <p:selectOneMenu value="#{cPedido.ped.id_usuario}">
+                        <f:selectItems var="usu" value="#{cUsuario.lista}" itemLabel="#{usu.nickName}" itemValue="#{usu.id}"/>
+                    </p:selectOneMenu>
+                    <p:outputLabel value="Comentarios"/>
+                    <p:keyboard value="#{cPedido.ped.comentarios}"/>
+                    <p:outputLabel value="Estado"/>
+                    <p:keyboard value="#{cPedido.ped.estado}" required="true"/>
+                    <p:commandButton value="Modificar" actionListener="#{cPedido.update()}" oncomplete="PF('p').hide();" update=":fPedido:data :msj"/>
+                    <p:commandButton value="Cancelar" oncomplete="PF('p').hide();" update=":fPedido:data" immediate="true"/>
+                </h:form>
+            </p:panelGrid>
+
+        </p:dialog>
+
+    </h:body>
+</html>
+
+
+

@@ -17,7 +17,7 @@ public class Tiempo implements Serializable{
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id_tipo;
+    private int id_tiempo;
     
     @Column(name="tipo")
     private String tipo;
@@ -26,12 +26,12 @@ public class Tiempo implements Serializable{
     @ManyToOne
     private TipoSucursal id_tipoSucursal;
 
-    public int getId_tipo() {
-        return id_tipo;
+    public int getId_tiempo() {
+        return id_tiempo;
     }
 
-    public void setId_tipo(int id_tipo) {
-        this.id_tipo = id_tipo;
+    public void getId_tiempo(int id_tiempo) {
+        this.id_tiempo = id_tiempo;
     }
 
     public String getTipo() {

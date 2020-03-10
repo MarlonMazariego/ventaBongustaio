@@ -68,7 +68,7 @@
         <div class="ui-g-6">
             <p:fieldset legend="Bongustaio: Nuestras bebidas" id="field">
                 <h:form id="fTipoBebida">
-                    <p:dataTable  var="lis" value="#{cTipoBebida.lista}" rows="10" id="data"
+                    <p:dataTable  var="lis" value="#{cTipoBebida.lista}" rows="10" id="data" stickyHeader="true"
                                   paginator="true"
                                   paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                   currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"

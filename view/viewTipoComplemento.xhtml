@@ -10,13 +10,13 @@ and open the template in the editor.
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
-        <title>Tipo bebidas</title>
+        <title>Tipo complemento</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     </h:head>
     <h:body>
 
         <p:growl id="msj"/>
-         <h:form>  
+        <h:form>  
             <p:toolbar id="nuevo">
                 <p:toolbarGroup align="right">
                     <p:menubar>
@@ -52,47 +52,49 @@ and open the template in the editor.
             <p:sticky target="nuevo" />
         </h:form>
         <br/>
-        <p:dialog widgetVar="mostrar" header="Bebidas" modal="true" showEffect="clip" resizable="false">
+        <p:dialog widgetVar="mostrar" header="Complemento" modal="true" showEffect="clip" resizable="false">
             <h:form id="valor">
                 <p:panelGrid columns="2">
-                    <p:outputLabel value="Ingrese el nombre de bebida"/>
-                    <p:inputText value="#{cTipoBebida.tipBeb.tipo}" placeholder="Nombre de bebida"/>
-                    <p:commandButton value="Guardar" actionListener="#{cTipoBebida.create()}" update=":data valor :msj" oncomplete="PF('mostrar').hide();"/>
+                    <p:outputLabel value="Nombre de complemento"/>
+                    <p:inputText value="#{cTipoComplemento.tipoComplemento.nombreTComp}" placeholder="Nombre de complemento"/>
+                    <p:commandButton value="Guardar" actionListener="#{cTipoComplemento.create()}" update=":data valor :msj" oncomplete="PF('mostrar').hide();"/>
                     <p:commandButton value="Cancelar" oncomplete="PF('mostrar').hide();" update=":data"/>
                 </p:panelGrid>
             </h:form>
         </p:dialog>
-
+        
         <h:form id="data">
-            <p:fieldset legend="Bebidas">
-                <p:dataTable  var="tbb" value="#{cTipoBebida.lista}" rows="10" id="data" rowIndexVar="i"
+            <p:fieldset legend="Complementos">
+                <p:dataTable  var="tcp" value="#{cTipoComplemento.lista}" rows="10" id="data" rowIndexVar="i"
                               paginator="true"
                               paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                               currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
                               rowsPerPageTemplate="5,10,15">
-                    <f:facet name="paginatorTopRight">
-                        <p:commandButton icon="pi pi-refresh" style="width: 70px; border-radius: 40px; font-size: 1.0em" action="#{cTipoBebida.init()}" update="data valor :msj"/>
+                    
+                      <f:facet name="paginatorTopRight">
+                          <p:commandButton icon="pi pi-refresh" style="width: 70px; border-radius: 40px; font-size: 1.0em" action="#{cTipoComplemento.init()}" update="data valor :msj"/>
                     </f:facet>
                     <f:facet name="paginatorBottomRight">
-                        <p:commandButton  icon="pi pi-refresh" action="#{cTipoBebida.init()}" style="width: 70px; border-radius: 40px; font-size: 1.0em" update="data valor :msj"/>
+                        <p:commandButton  icon="pi pi-refresh" action="#{cTipoComplemento.init()}" style="width: 70px; border-radius: 40px; font-size: 1.0em" update="data valor :msj"/>
                     </f:facet>
 
+
                     <f:facet name="header">
-                        Informacion de bebidas
-                    </f:facet>
+                        Informacion Tipo de complementos
+                         </f:facet>
                     <p:column headerText="Id" >
                         <h:outputText value="#{i + 1}"/>
                     </p:column>
-                    <p:column headerText="Nombre de bebidas" >
-                        <h:outputText value="#{tbb.tipo}"/>
+                    <p:column headerText="Nombre de complemento" >
+                        <h:outputText value="#{tcp.nombreTComp}"/>
                     </p:column>
                     <p:column headerText="Opciones" style="text-align: center">
                         <p:growl id="msj" showDetail="true"/>
                         <p:menuButton value="Opciones" style="text-align: center">
-                            <p:menuitem value="Eliminar Id: #{tbb.id_tipoBebida}" actionListener="#{cTipoBebida.delete(tbb)}"  update="data :msj"  icon="pi pi-times" >
+                            <p:menuitem value="Eliminar Id: #{tcp.id_tipoCom}" actionListener="#{cTipoComplemento.delete(tcp)}"  update="data :msj"  icon="pi pi-times" >
                                 <p:confirm  header="Confirmacion" message="¿Seguro que quieres eliminar?" icon="pi pi-exclamation-triangle"/>
                             </p:menuitem>
-                            <p:menuitem  value="Modificar" actionListener="#{cTipoBebida.find(tbb)}" update=":wlgdatos" oncomplete="PF('w').show();"   icon="pi pi-refresh"/>
+                            <p:menuitem  value="Modificar" actionListener="#{cTipoComplemento.find(tcp)}" update=":wlgdatos" oncomplete="PF('w').show();"   icon="pi pi-refresh"/>
 
                         </p:menuButton>
 
@@ -106,10 +108,10 @@ and open the template in the editor.
             <h:form id="panel">
                 <p:panelGrid columns="2">
                     <p:outputLabel value="Id"/>
-                    <h:outputText value="#{cTipoBebida.tipBeb.id_tipoBebida}"/>
-                    <p:outputLabel value="Ingrese el nombre de bebida"/>
-                    <p:inputText value="#{cTipoBebida.tipBeb.tipo}" placeholder="Nombre de bebida"/>                   
-                    <p:commandButton value="Modificar" actionListener="#{cTipoBebida.update()}" oncomplete="PF('w').hide();" update=":data"/>
+                    <h:outputText value="#{cTipoComplemento.tipoComplemento.id_tipoCom}"/>
+                    <p:outputLabel value="Nombre de complemento"/>
+                    <p:inputText value="#{cTipoComplemento.tipoComplemento.nombreTComp}" placeholder="Nombre de complemento"/>                   
+                    <p:commandButton value="Modificar" actionListener="#{cTipoComplemento.update()}" oncomplete="PF('w').hide();" update=":data"/>
                     <p:commandButton value="Cancelar" oncomplete="PF('w').hide();" update=":data"/>
                 </p:panelGrid>
             </h:form>

@@ -129,7 +129,7 @@
                 <p:outputLabel value="Id"/>
                 <p:inputText value="#{cTipoBebida.tipBeb.id_tipoBebida}" disabled="true"/>
                 <p:outputLabel value="Tipo"/>
-                <p:inputText value="#{cTipoBebida.tipBeb.tipo}" required="true"/>
+                <p:keyboard value="#{cTipoBebida.tipBeb.tipo}" required="true"/>
                 <p:commandButton value="Modificar" actionListener="#{cTipoBebida.update()}" oncomplete="PF('tb').hide();" update=" :fTipoBebida:data :msj">
                     <p:confirm header="Confirmation" message="¿Desea realizar cambios?" icon="pi pi-exclamation-triangle" />
                 </p:commandButton>

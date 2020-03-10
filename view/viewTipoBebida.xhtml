@@ -1,0 +1,145 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Punto de Venta Bongustaio</title>
+
+    </h:head>
+    <h:body>
+        <br/>
+        <p:growl id="msj" showDetail="true"/>
+
+        <!--Para la barra de menú -->
+        <!--Es funcional para la opción de guardar, lo demás está de forma estética por el momento -->
+        <h:form>  
+            <p:toolbar id="tb">
+                <p:toolbarGroup align="right">
+                    <p:menubar>
+                        <p:submenu label="Archivo" icon="pi pi-file">
+                            <p:menuitem value="Nuevo Tipo" onclick="PF('form').show();" icon="pi pi-plus"/>
+                        </p:submenu>
+                        <p:submenu label="Editar" icon="pi pi-pencil">
+                            <p:menuitem value="Por id" url="#" icon="pi pi-angle-double-left" />
+                        </p:submenu>
+                        <p:submenu label="Help" icon="pi pi-question">
+                            <p:menuitem value="Contents" url="#" />
+                            <p:submenu label="Search" icon="pi pi-search">
+                                <p:submenu label="Text">
+                                    <p:menuitem value="Workspace" url="#" />
+                                </p:submenu>
+                                <p:menuitem value="File" url="#" />
+                            </p:submenu>
+                        </p:submenu>
+                        <p:submenu label="Acciones" icon="pi pi-cog">
+                            <p:menuitem value="Acción 1" url="#" icon="pi pi-angle-double-left" />
+                            <p:menuitem value="Acción 2" url="#" icon="pi pi-angle-double-left" />
+                        </p:submenu>
+                        <p:menuitem value="Salir" icon="pi pi-times"/>
+
+                        <f:facet name="options">
+                            <p:inputText style="margin:1px 10px 1px 1px;" placeholder="Buscar"/>
+                            <p:commandButton type="button" value="Cerrar sesión" icon="pi pi-home" />
+                        </f:facet>
+                    </p:menubar>
+                </p:toolbarGroup>
+            </p:toolbar>
+            <p:sticky target="tb" />
+        </h:form>
+
+
+        <!--Esto es para el content-flow, falta estandarizar el tamaño de las imágenes -->
+        <br/>  
+        <div class="ui-g-"></div>
+        <div class="ui-g-6">  
+            <p:contentFlow value="#{cimg.images}" var="image">
+                <p:graphicImage  url="../resources/img/#{image}" styleClass="content" value="#{imgContinente.images}" style="height: 250px; width: 300px"/>
+                <br/>  
+                <br/>  
+                <br/>  
+                <div class="caption">#{image}</div>
+            </p:contentFlow>  
+        </div>
+        <br/>
+
+        <!--Tabla principal -->
+        <div class="ui-g-6">
+            <p:fieldset legend="Bongustaio: Nuestras bebidas" id="field">
+                <h:form id="fTipoBebida">
+                    <p:dataTable  var="lis" value="#{cTipoBebida.lista}" rows="10" id="data"
+                                  paginator="true"
+                                  paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                  currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                                  rowsPerPageTemplate="5,10,15" rowIndexVar="i" widgetVar="tbTipoBebida">
+                        <f:facet name="header">
+                            Tipos de bebidas disponibles
+                        </f:facet>
+                        <f:facet name="paginatorTopLeft">
+                            <p:commandButton icon="pi pi-refresh" action="#{cTipoBebida.clear()}" update="fTipoBebida"/>
+                        </f:facet>
+                        <f:facet name="paginatorBottomLeft">
+                            <p:commandButton icon="pi pi-refresh" action="#{cTipoBebida.clear()}" update="fTipoBebida"/>
+                        </f:facet>
+                        <p:column headerText="Id" footerText="Id" sortBy="#{lis.id_tipoBebida}">
+                            <h:outputText value="#{i + 1}"/>
+                        </p:column>
+                        <p:column headerText="Tipo de bebida" footerText="Tipo de bebida">
+                            <h:outputText value="#{lis.tipo}"/>
+                        </p:column>
+
+                        <p:column headerText="Herramientas" footerText="Herramientas" style="text-align: center">
+                            <p:commandButton type="button" value="Opciones" id="slidebutton" icon="pi pi-pencil"/>
+                            <p:slideMenu trigger="slidebutton" overlay="true" my="left top" at="left bottom" style="width: 180px;">
+                                <p:menuitem value="Eliminar" action="#{cTipoBebida.delete(lis)}"  update=":msj :fTipoBebida:data" icon="pi pi-trash">
+                                    <p:confirm header="Confirmation" message="¿Desea eliminar el registro?" icon="pi pi-exclamation-triangle" />
+                                </p:menuitem>
+                                <p:menuitem value="Modificar" action="#{cTipoBebida.find(lis)}"  update=":tb_datos :msj" oncomplete="PF('tb').show();" icon="pi pi-spinner"/>
+
+                            </p:slideMenu>
+                        </p:column>
+                    </p:dataTable>
+                    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                        <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+                        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="pi pi-times" />
+                    </p:confirmDialog>  
+
+                </h:form>
+            </p:fieldset>
+        </div>
+
+        <!--Modal para guardar -->
+
+
+
+        <h:form id="formulario">
+            <p:dialog header="Tipo de bebida" widgetVar="form" modal="true" resizable="false" showEffect="clip">   
+                <p:ajax event="close" listener="#{cTipoBebida.clear()}" update=":formulario"/>
+                <p:outputLabel value="Tipo"/>
+                <p:keyboard value="#{cTipoBebida.tipBeb.tipo}" required="true"/>
+                <p:commandButton value="Guardar" actionListener="#{cTipoBebida.save()}"  update=":fTipoBebida:data :msj"/>
+            </p:dialog>
+        </h:form>
+
+
+        <!--Modal para modificar-->
+        <p:dialog header="Tipo de bebida" widgetVar="tb" id="tb_datos">
+            <h:form>
+                <p:outputLabel value="Id"/>
+                <p:inputText value="#{cTipoBebida.tipBeb.id_tipoBebida}" disabled="true"/>
+                <p:outputLabel value="Tipo"/>
+                <p:inputText value="#{cTipoBebida.tipBeb.tipo}" required="true"/>
+                <p:commandButton value="Modificar" actionListener="#{cTipoBebida.update()}" oncomplete="PF('tb').hide();" update=" :fTipoBebida:data :msj">
+                    <p:confirm header="Confirmation" message="¿Desea realizar cambios?" icon="pi pi-exclamation-triangle" />
+                </p:commandButton>
+                <p:commandButton value="Cancelar" oncomplete="PF('tb').hide();" update=" :fTipoBebida:data" immediate="true"/>
+
+            </h:form>
+        </p:dialog>
+
+
+
+    </h:body>
+</html>
+

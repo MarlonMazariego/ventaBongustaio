@@ -42,9 +42,6 @@ public class Producto implements Serializable {
     @Column(name = "estado")
     private String estado;
     
-    @JoinColumn(name = "id_subCategoria", referencedColumnName = "id_subCategoria")
-    @ManyToOne
-    private ScaPlatillo id_subCategoria;
 
     public int getId_producto() {
         return id_producto;
@@ -109,15 +106,6 @@ public class Producto implements Serializable {
     public void setCosto_unitario(int costo_unitario) {
         this.costo_unitario = costo_unitario;
     }
-
-    public ScaPlatillo getId_subCategoria() {
-        return id_subCategoria;
-    }
-
-    public void setId_subCategoria(ScaPlatillo id_subCategoria) {
-        this.id_subCategoria = id_subCategoria;
-    }
-
     public String getEstado() {
         return estado;
     }

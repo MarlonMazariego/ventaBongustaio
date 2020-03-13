@@ -1,0 +1,109 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Tipo Sub Plato</title>
+    </h:head>
+    <h:body>
+
+        
+        
+        <p:growl id="msj" showDetail="true"/>
+
+        <!----- boton modal  ------>
+        <h:form>
+            <p:commandButton value="Modal" type="button" onclick="PF('modal2').show();" />
+        </h:form>
+
+
+        <p:dialog header="Sub CAtegoria Platillo" widgetVar="modal2" modal="true" showEffect="slide"
+                  hideEffect="slide" resizable="false" draggable="false" blockScroll="false" closeOnEscape="true"
+                  closable="true" responsive="true" position="center">
+
+            <h:form id="dat">
+                <p:fieldset legend="Tipo Platillo">
+
+                    <p:panelGrid columns="2">
+                        <p:outputLabel value="Tipo  :" for="@next"/>
+                        <p:inputText value="#{cCargo.cargo.cargo}" required="true"/>
+                        <p:outputLabel value="Tiempo:" for="@next"/>
+                        <p:inputText value="#"/>
+                        <p:commandButton value="guardar" action="#{cCargo.save()}" update="data :msj"/>
+
+                    </p:panelGrid>
+
+                    <!-----     tabla ------------------------->
+                    <p:dataTable  var="c" value="#{cCargo.lista}" rows="10" id="data" rowIndexVar="i"
+                                  paginator="true"
+                                  paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                  currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                                  rowsPerPageTemplate="5,10,15" >
+
+                        <f:facet name="paginatorTopRight">
+                            <p:commandButton icon="pi pi-refresh" style="width: 70px; border-radius: 40px; font-size: 1.0em" action="#{cCargo.clear()}" update=":msj"/>
+                        </f:facet>
+                        <f:facet name="paginatorBottomRight">
+                            <p:commandButton  icon="pi pi-refresh" action="#{cCargo.init()}" style="width: 70px; border-radius: 40px; font-size: 1.0em" update=":msj"/>
+                        </f:facet>
+                        <br></br>
+                        <br></br>
+                        <p:column headerText="Id" >
+                            <h:outputText value="#{i + 1}"/>
+                        </p:column>
+                        <p:column headerText="Sub Categoria Platillo" >
+                            <h:outputText value="#{c.cargo}"/>
+                        </p:column>
+                        <p:column headerText="Tiempo" >
+                           <!-- los datos de la tabla foranea tiempo-->
+                        </p:column>
+                        
+                        <!-- botton para eliminar y editar ---->
+                        <p:column headerText="Opciones" style="text-align: center">
+                         <p:growl id="msj" showDetail="true"/>
+                            <p:menuButton value="Opciones" style="text-align: center">
+                                <p:menuitem value="Eliminar Id: #{c.id_cargo}" actionListener="#{cCargo.delete(c)}"  update="data :msj"  icon="pi pi-times" >
+                                    <p:confirm  header="Confirmacion" message="¿Seguro que quieres eliminar?" icon="pi pi-exclamation-triangle"/>
+                                </p:menuitem>
+                                <p:menuitem  value="Modificar" actionListener="#{cCargo.find(c)}" update=":edt" oncomplete="PF('dlg').show();"   icon="pi pi-refresh"/>
+                            </p:menuButton>
+                        </p:column>
+
+                    </p:dataTable>
+                    <!---------          tabla--------------------------->
+                </p:fieldset>
+            </h:form>
+        </p:dialog>
+
+        <!-- modal para modificar un registro-->
+        
+        <h:form  id="edt">
+            <p:dialog header="Sub CAtegoria Platillo" widgetVar="dlg" modal="true" showEffect="slide"
+                      hideEffect="slide" resizable="false" draggable="false" blockScroll="false" closeOnEscape="true"
+                      closable="true" responsive="true" position="center">
+
+                <p:panelGrid columns="2">
+                    <p:outputLabel value="Tipo  :" for="@next"/>
+                    <p:inputText value="#{cCargo.cargo.cargo}" required="true"/>
+                    <p:outputLabel value="Tiempo:" for="@next"/>
+                    <p:inputText value="#"/>
+                    <p:commandButton value="guardar" action="#{cCargo.update()}" update=":dat :msj" onclick="closedDialog('dlg')"/>
+
+                </p:panelGrid>
+            </p:dialog>
+        </h:form
+        <!------------------------------------------------------------------------------------------------->
+
+   <!-- dialogo para eliminar un Registro -->
+        <h:form>
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton value="Si" type="button"  styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="pi pi-times" />
+            </p:confirmDialog>      
+        </h:form>
+   
+    </h:body>
+</html>

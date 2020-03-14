@@ -1,0 +1,149 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Punto de Venta Bongustaio</title>       
+    </h:head>
+    <h:body>
+        <br/>
+        <p:growl id="msj" showDetail="true"/>
+
+
+        <!--Para la barra de menú -->
+        <!--Es funcional para la opción de guardar, lo demás está de forma estética por el momento -->
+        <h:form>  
+            <p:toolbar id="tb">
+                <p:toolbarGroup align="right">
+                    <p:menubar>
+                        <p:submenu label="Archivo" icon="pi pi-file">
+                            <p:menuitem value="Ingresar platillo" onclick="PF('form').show();" icon="pi pi-plus"/>
+                        </p:submenu>
+                        <p:submenu label="Editar" icon="pi pi-pencil">
+                            <p:menuitem value="Por id" url="#" icon="pi pi-angle-double-left" />
+                        </p:submenu>
+                        <p:submenu label="Help" icon="pi pi-question">
+                            <p:menuitem value="Contents" url="#" />
+                            <p:submenu label="Search" icon="pi pi-search">
+                                <p:submenu label="Text">
+                                    <p:menuitem value="Workspace" url="#" />
+                                </p:submenu>
+                                <p:menuitem value="File" url="#" />
+                            </p:submenu>
+                        </p:submenu>
+                        <p:submenu label="Acciones" icon="pi pi-cog">
+                            <p:menuitem value="Acción 1" url="#" icon="pi pi-angle-double-left" />
+                            <p:menuitem value="Acción 2" url="#" icon="pi pi-angle-double-left" />
+                        </p:submenu>
+                        <p:menuitem value="Salir" icon="pi pi-times"/>
+
+                        <f:facet name="options">
+                            <p:inputText style="margin:1px 10px 1px 1px;" placeholder="Buscar"/>
+                            <p:commandButton type="button" value="Cerrar sesión" icon="pi pi-home" />
+                        </f:facet>
+                    </p:menubar>
+                </p:toolbarGroup>
+            </p:toolbar>
+            <p:sticky target="tb" />
+        </h:form>
+
+
+        <div class="ui-g-2"></div>
+        <div class="ui-g-8">
+            <p:fieldset legend="Menú" id="field">
+                <h:form id="fPlatillo">
+                    <p:dataTable var="lis" value="#{cPlatillo.lista}" rows="10" id="data" stickyHeader="true"
+                                 paginator="true"
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                                 rowsPerPageTemplate="5,10,15" rowIndexVar="i" widgetVar="tbPlatillo">
+                        <f:facet name="header">
+                            Platillos disponibles
+                        </f:facet>
+                        <f:facet name="paginatorTopLeft">
+                            <p:commandButton icon="pi pi-refresh" action="#{cPlatillo.clear()}" update="fPlatillo"/>
+                        </f:facet>
+                        <f:facet name="paginatorBottomLeft">
+                            <p:commandButton icon="pi pi-refresh" action="#{cPlatillo.clear()}" update="fPlatillo"/>
+                        </f:facet>
+                        <p:column headerText="Id" footerText="Id" sortBy="#{lis.id_platillo}">
+                            <h:outputText value="#{i + 1}"/>
+                        </p:column>
+                        <p:column headerText="Nombre del platillo" footerText="Nombre del platillo">
+                            <h:outputText value="#{lis.nombrePlatillo}"/>
+                        </p:column>
+                        <p:column headerText="Precio" footerText="Precio">
+                            <h:outputText value="#{lis.precioPlatillo}"/>
+                        </p:column>
+                        <p:column headerText="Costo" footerText="Costo">
+                            <h:outputText value="#{lis.precioPlatillo}"/>
+                        </p:column>
+                        <p:column headerText="Sub categoría" footerText="Sub categoría">
+                            <h:outputText value="#{lis.scaPlatillo.tipoPlatillo}"/>
+                        </p:column>     
+                            <p:column headerText="Herramientas" footerText="Herramientas" style="text-align: center">
+                            <p:commandButton type="button" value="Opciones" id="slidebutton" icon="pi pi-pencil"/>
+                            <p:slideMenu trigger="slidebutton" overlay="true" my="left top" at="left bottom" style="width: 180px;">
+                                <p:menuitem value="Eliminar" action="#{cPlatillo.delete(lis)}"  update=":msj :fPlatillo:data" icon="pi pi-trash">
+                                    <p:confirm header="Confirmation" message="¿Desea eliminar el registro?" icon="pi pi-exclamation-triangle" />
+                                </p:menuitem>
+                                <p:menuitem value="Modificar" action="#{cPlatillo.find(lis)}"  update=":pla_datos :msj" oncomplete="PF('pla').show();" icon="pi pi-spinner"/>
+                            </p:slideMenu>
+                        </p:column>
+                    </p:dataTable>
+                         <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                        <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+                        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="pi pi-times" />
+                    </p:confirmDialog>  
+                </h:form>
+            </p:fieldset>
+        </div>
+        
+           <!--Modal para guardar -->
+        <h:form id="formulario">
+            <p:dialog header="Datos del platillo" widgetVar="form" modal="true" resizable="false" showEffect="clip">
+                <p:ajax event="close" listener="#{cPlatillo.clear()}" update=":formulario"/>
+                <p:panelGrid columns="2">
+                    <p:outputLabel value="Nombre del platillo"/>
+                    <p:keyboard value="#{cPlatillo.pla.nombrePlatillo}" required="true"/>
+                    <p:outputLabel value="Precio"/>
+                    <p:keyboard value="#{cPlatillo.pla.precioPlatillo}" required="true"/>
+                    <p:outputLabel value="Costo"/>
+                    <p:keyboard value="#{cPlatillo.pla.costoPlatillo}" required="true"/>
+                    <p:outputLabel value="Sub categoría"/>
+                    <p:selectOneMenu value="#{cPlatillo.pla.scaPlatillo}">
+                        <f:selectItems var="ca" value="#{cScaPLatillo.lista}" itemLabel="#{ca.tipo}" itemValue="#{ca.id_subCategoria}"/>
+                    </p:selectOneMenu>
+                    <p:commandButton value="Guardar" actionListener="#{cPlatillo.save()}" update=":fPlatillo:data :msj"/>
+                </p:panelGrid>
+            </p:dialog>
+        </h:form>
+
+
+ <!--Modal para modificar-->
+        <p:dialog header="Datos del platillo" widgetVar="pla" id="pla_datos">
+            <h:form>
+                <h:panelGrid columns="2">
+                    <p:outputLabel value="Id"/>
+                    <p:keyboard value="#{cPlatillo.pla.id_platillo}" disabled="true"/>
+                    <p:outputLabel value="Nombre del platillo"/>
+                    <p:keyboard value="#{cPlatillo.pla.nombrePlatillo}" required="true"/>
+                    <p:outputLabel value="Precio"/>
+                    <p:keyboard value="#{cPlatillo.pla.precioPlatillo}" required="true"/>
+                    <p:outputLabel value="Costo"/>
+                    <p:keyboard value="#{cPlatillo.pla.costoPlatillo}" required="true"/>
+                    <p:outputLabel value="Sub categoría"/>
+                    <p:selectOneMenu value="#{cPlatillo.pla.scaPlatillo}">
+                        <f:selectItems var="ca" value="#{cScaPLatillo.lista}" itemLabel="#{ca.tipo}" itemValue="#{ca.id_subCategoria}"/>
+                    </p:selectOneMenu>
+                    <p:commandButton value="Modificar" actionListener="#{cPlatillo.update()}" oncomplete="PF('pla').hide();" update=":fPlatillo:data :msj"/>
+                    <p:commandButton value="Cancelar" oncomplete="PF('pla').hide();" update=":fPlatillo:data" immediate="true"/>
+                </h:panelGrid>
+            </h:form>
+        </p:dialog>
+
+    </h:body>
+</html>
+

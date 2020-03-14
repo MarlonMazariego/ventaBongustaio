@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Controller;
+package controller;
 
 import ejb.MovimientoFacadeLocal;
 import entity.Movimiento;
@@ -13,64 +13,101 @@ import java.io.Serializable;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 
 /**
  *
- * @author andy.chuyusam
+ * @author fernando.barrazausam
  */
 @Named(value = "cMovimiento")
 @SessionScoped
 public class CMovimiento implements Serializable {
 
     @EJB
-    private MovimientoFacadeLocal moviminetoEJB;
-    private Movimiento movimiento;
+    private MovimientoFacadeLocal movimientoEJB;
+    private Movimiento mov;
     private List<Movimiento> lista;
 
-    public Movimiento getMovimiento() {
-        return movimiento;
+    /*MENSAJE*/
+    private String msj;
+
+    public Movimiento getMov() {
+        return mov;
     }
 
-    public void setMovimiento(Movimiento movimiento) {
-        this.movimiento = movimiento;
+    public void setMov(Movimiento mov) {
+        this.mov = mov;
     }
 
     public List<Movimiento> getLista() {
-        this.lista = moviminetoEJB.findAll();
+        this.lista = this.movimientoEJB.findAll();
         return lista;
     }
 
     public void setLista(List<Movimiento> lista) {
         this.lista = lista;
     }
-    
+
     @PostConstruct
-    public void init(){
-    
-    movimiento =  new Movimiento();
+    public void init() {
+        this.mov = new Movimiento();
     }
-    
-    public void clear(){
-    movimiento =  new Movimiento();
+
+    public void refresh() {
+        try {
+            this.lista = this.movimientoEJB.findAll();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Error " + e.getMessage());
+        }
     }
-    public void consultarAll(){
-    lista =  moviminetoEJB.findAll();
+
+    public void update() {
+        FacesMessage mensa;
+        try {
+            this.movimientoEJB.edit(mov);
+            init();
+            refresh();
+            this.msj = "Registro modificado con  éxito";
+            mensa = new FacesMessage(FacesMessage.SEVERITY_INFO, "Operación completa", msj);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Error al modificar " + e.getMessage());
+            mensa = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Operación fallida", msj);
+        }
+        FacesContext.getCurrentInstance().addMessage(msj, mensa);
     }
-    
-    public void save(){
-    
-    moviminetoEJB.create(movimiento);
+
+    public void find(Movimiento id) {
+        FacesMessage mensa;
+        try {
+            this.mov = id;
+            this.msj = "Registro modificado con  éxito";
+            mensa = new FacesMessage(FacesMessage.SEVERITY_INFO, "Operación completa", msj);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Error al modificar " + e.getMessage());
+            mensa = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Operación fallida", msj);
+        }
+        FacesContext.getCurrentInstance().addMessage(msj, mensa);
     }
-    
-    public void update(){
-    moviminetoEJB.edit(movimiento);
+
+    public void delete(Movimiento id) {
+        FacesMessage mensa;
+        try {
+            this.movimientoEJB.delete(id);
+            this.msj = "Registro eliminado con  éxito";
+            mensa = new FacesMessage(FacesMessage.SEVERITY_INFO, "Operación completa", msj);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Error al eliminar " + e.getMessage());
+            mensa = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Operación fallida", msj);
+        }
+        FacesContext.getCurrentInstance().addMessage(msj, mensa);
     }
-    
-    public void delete(Movimiento id){
-     moviminetoEJB.delete(id);
-    }
-    
-    public void leerId(Movimiento id){
-    this.movimiento =  id;
-    }
+
 }

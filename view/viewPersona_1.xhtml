@@ -1,0 +1,223 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+        <title>Bongustaio</title>
+    </h:head>
+    <h:body>
+
+        <p:growl id="msj" showDetail="true"/>
+
+
+        <h:form>  
+            <p:toolbar id="tb">
+                <p:toolbarGroup align="right">
+                    <p:menubar>
+                        <p:submenu label="Tipos de cargos " icon="pi pi-file">
+                            <p:menuitem value="Ingresar Tipo cargo" oncomplete="PF('modal-tipo').show()" icon="pi pi-plus"/>
+                            <p:menuitem value="Ver Tipos" oncomplete="PF('modal-tabla-tipo').show()" icon="pi pi-plus"/>
+                        </p:submenu>
+                        <p:submenu label="Personal" icon="pi pi-pencil">
+                            <p:menuitem value="Agregar personal"  oncomplete="PF('modal-persona').show();" icon="pi pi-plus"/>
+                        </p:submenu>
+                        <p:submenu label="Help" icon="pi pi-question">
+                            <p:menuitem value="Contents" url="#" />
+                            <p:submenu label="Search" icon="pi pi-search">
+                                <p:submenu label="Text">
+                                    <p:menuitem value="Workspace" url="#" />
+                                </p:submenu>
+                                <p:menuitem value="File" url="#" />
+                            </p:submenu>
+                        </p:submenu>
+                        <p:submenu label="Acciones" icon="pi pi-cog">
+                            <p:menuitem value="Acción 1" url="#" icon="pi pi-angle-double-left" />
+                            <p:menuitem value="Acción 2" url="#" icon="pi pi-angle-double-left" />
+                        </p:submenu>
+                        <p:menuitem value="Salir" icon="pi pi-times"/>
+
+                        <f:facet name="options">
+                            <p:inputText style="margin:1px 10px 1px 1px;" placeholder="Buscar"/>
+                            <p:commandButton type="button" value="Cerrar sesión" icon="pi pi-home" />
+                        </f:facet>
+                    </p:menubar>
+                </p:toolbarGroup>
+            </p:toolbar>
+            <p:sticky target="tb" />
+        </h:form>    
+
+        
+        <!--<ui:include src="../View/viewCargo.xhtml"/> -->
+
+        <div class="ui-g-1"></div>
+        <div class="ui-g-12">
+            <p:fieldset legend="Nuestras personal">
+                <h:form id="fS">
+                    <p:dataTable  var="p" value="#{CPersona.lista}" rows="10" id="data"
+                                  paginator="true"
+                                  paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                  currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                                  rowsPerPageTemplate="5,10,15" rowIndexVar="i" widgetVar="tbPersona">
+                        <f:facet name="header">
+                            Personal disponible
+                        </f:facet>
+                        <f:facet name="paginatorTopLeft">
+                            <p:commandButton icon="pi pi-refresh" action="#{CPersona.init()}" update="fS"/>
+                        </f:facet>
+                        <f:facet name="paginatorBottomLeft">
+                            <p:commandButton icon="pi pi-refresh" action="#{CPersona.init()}" update="fS"/>
+                        </f:facet>
+                        <p:column headerText="Id" footerText="Id" sortBy="#{p.id_persona}">
+                            <h:outputText value="#{i + 1}"/>
+                        </p:column>
+                    <p:column headerText="Nombres" >
+                         <h:outputText value="#{p.nombres}"/>
+                    </p:column>
+                     <p:column headerText="Apellidos" >
+                         <h:outputText value="#{p.apellidos}"/>
+                    </p:column>
+                     <p:column headerText="Edad" >
+                         <h:outputText value="#{p.edad}"/>
+                    </p:column>
+                     <p:column headerText="Direccion">
+                         <h:outputText value="#{p.dir}"/>
+                    </p:column>
+                     <p:column headerText="Correo Electronico" >
+                         <h:outputText value="#{p.email}"/>
+                    </p:column>
+                    <p:column headerText="Genero">
+                        <h:outputText value="#{p.genero}"/>
+                    </p:column>
+                    <p:column headerText="DUI">
+                        <h:outputText value="#{p.dui}"/>
+                    </p:column>
+                    <p:column headerText="NIT">
+                        <h:outputText value="#{p.nit}"/>
+                    </p:column>
+                    <p:column headerText="Telefono">
+                        <h:outputText value="#{p.tel}"/>
+                    </p:column>
+                    
+                    <p:column headerText="Salario asignado">
+                        <h:outputText value="#{p.salario_asignado}"/>
+                    </p:column>
+                    <p:column headerText="Cargo">
+                        <h:outputText value="#{p.id_cargo.cargo}"/>
+                    </p:column>
+                     <p:column headerText="Sucursal">
+                         <h:outputText value="#{p.id_sucursal.nombre}"/>
+                    </p:column>
+
+                        <p:column headerText="Opciones" footerText="Herramientas" style="text-align: center">
+                            <p:commandButton type="button" value="Opciones" id="slidebutton" icon="pi pi-pencil"/>
+                            <p:slideMenu trigger="slidebutton" overlay="true" my="left top" at="left bottom" style="width: 180px;">
+                                <p:menuitem value="Eliminar (#{CPersona.per.id_persona})" action="#{CPersona.delete(p)}"  update=":msj :fS:data" icon="pi pi-trash">
+                                    <p:confirm header="Confirmation" message="¿Desea eliminar el registro?" icon="pi pi-exclamation-triangle" />
+                                </p:menuitem>
+                                <p:menuitem value="Modificar" action="#{CPersona.find(p)}"  update=":s_datos :msj" oncomplete="PF('s').show();" icon="pi pi-spinner"/>
+                            </p:slideMenu>
+                        </p:column>
+                    </p:dataTable>
+                    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                        <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+                        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="pi pi-times" />
+                    </p:confirmDialog>  
+                </h:form>
+            </p:fieldset>
+        </div>
+
+        <!--Modal para guardar -->
+        <h:form id="formulario">
+            <p:dialog header="Datos del personal" widgetVar="modal-persona" modal="true" resizable="false" showEffect="clip">   
+                <p:ajax event="close" listener="#{CPersona.init()}" update=":formulario"/>
+                <p:panelGrid columns="4">
+                     <p:outputLabel value="Ingrese el nombre"/>
+                    <p:inputText value="#{CPersona.per.nombres}" placeholder="Nombres"/>
+                    <p:outputLabel value="Ingrese apellidos"/>
+                    <p:inputText value="#{CPersona.per.apellidos}" placeholder="apellidos"/>
+                    <p:outputLabel value="Ingrese edad"/>
+                    <p:inputText value="#{CPersona.per.edad}" placeholder="Edad"/>
+                    <p:outputLabel value="Ingrese dui"/>
+                    <p:inputText value="#{CPersona.per.dui}" placeholder="DUI"/>
+                    <p:outputLabel value="Ingrese nit"/>
+                    <p:inputText value="#{CPersona.per.nit}" placeholder="NIT"/>
+                    <p:outputLabel value="Ingrese numero de telefono"/>
+                    <p:inputText value="#{CPersona.per.tel}" placeholder="Numero de telefon"/>
+                    <p:outputLabel value="Ingrese direccion de recidencia"/>
+                    <p:inputText value="#{CPersona.per.dir}" placeholder="Direccion de recidencia"/>
+                    <p:outputLabel value="Ingrese correo electronico"/>
+                    <p:inputText value="#{CPersona.per.email}" placeholder="Correo electronico"/>
+                    <p:outputLabel value="Ingrese genero"/>
+                    <p:inputText value="#{CPersona.per.genero}" placeholder=" 'f' 'm' "/>
+                    <p:outputLabel value="Ingrese salario"/>
+                    <p:inputText value="#{CPersona.per.salario_asignado}" placeholder="$"/>
+                    
+                     <p:outputLabel value="Ingrese Cargo"/>
+                      <p:selectOneMenu value="#{CPersona.car.id_cargo}">
+                          <f:selectItems value="#{cCargo.lista}" var="c" itemLabel="#{c.cargo}"
+                                         itemValue="#{c.id_cargo}"/>
+                        </p:selectOneMenu>
+                   
+                    <p:outputLabel value="Ingrese Sucursal"/>
+                    <p:selectOneMenu value="#{CPersona.suc.id_sucursal}">
+                        <f:selectItems value="#{CSucursal.lista}" var="s" itemLabel="#{s.nombre}"
+                                       itemValue="#{s.id_sucursal}"/>
+                        </p:selectOneMenu>
+                    <p:commandButton value="Guardar" actionListener="#{CPersona.create()}"  update=":fS:data :msj" oncomplete="PF('modal-persona').hide();"/>
+                         <p:commandButton value="Cancelar" oncomplete="PF('modal-persona').hide();"  update=":s_datos"/>
+                </p:panelGrid>
+            </p:dialog>
+        </h:form>
+       
+
+        <!--Modal para modificar -->
+        <p:dialog header="Personal" widgetVar="s" id="s_datos">
+            <h:form>
+                
+                <p:outputLabel value="Id"/>
+                <p:outputLabel value="#{CPersona.per.id_persona}"/>
+                <p:outputLabel value="Ingrese el nombre"/>
+                    <p:inputText value="#{CPersona.per.nombres}"/>
+                    <p:outputLabel value="Ingrese apellidos"/>
+                    <p:inputText value="#{CPersona.per.apellidos}"/>
+                    <p:outputLabel value="Ingrese edad"/>
+                    <p:inputText value="#{CPersona.per.edad}"/>
+                    <p:outputLabel value="Ingrese dui"/>
+                    <p:inputText value="#{CPersona.per.dui}"/>
+                    <p:outputLabel value="Ingrese nit"/>
+                    <p:inputText value="#{CPersona.per.nit}"/>
+                    <p:outputLabel value="Ingrese numero de telefono"/>
+                    <p:inputText value="#{CPersona.per.tel}"/>
+                    <p:outputLabel value="Ingrese direccion de recidencia"/>
+                    <p:inputText value="#{CPersona.per.dir}"/>
+                    <p:outputLabel value="Ingrese correo electronico"/>
+                    <p:inputText value="#{CPersona.per.email}"/>
+                    <p:outputLabel value="Ingrese genero"/>
+                    <p:inputText value="#{CPersona.per.genero}"/>
+                    <p:outputLabel value="Ingrese salario"/>
+                    <p:inputText value="#{CPersona.per.salario_asignado}"/>
+                    
+                      <p:outputLabel value="Ingrese Cargo"/>
+                      <p:selectOneMenu value="#{CPersona.car.id_cargo}">
+                          <f:selectItems value="#{cCargo.lista}" var="c" itemLabel="#{c.cargo}"
+                                         itemValue="#{c.id_cargo}"/>
+                        </p:selectOneMenu>
+                   
+                    <p:outputLabel value="Ingrese Sucursal"/>
+                    <p:selectOneMenu value="#{CPersona.suc.id_sucursal}">
+                        <f:selectItems value="#{CSucursal.lista}" var="s" itemLabel="#{s.nombre}"
+                                       itemValue="#{s.id_sucursal}"/>
+                        </p:selectOneMenu>
+                    <p:commandButton value="Modificar" actionListener="#{CPersona.update()}" oncomplete="PF('s').hide();" update=" :fS:data :msj">
+                    <p:confirm header="Confirmation" message="¿Desea realizar cambios?" icon="pi pi-exclamation-triangle" />
+                </p:commandButton>
+                <p:commandButton value="Cancelar" oncomplete="PF('s').hide();" update=" :fS:data" immediate="true"/>
+             
+            </h:form>
+        </p:dialog>
+
+    </h:body>
+</html>

@@ -1,0 +1,93 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+
+   
+    <p:growl id="msj1" showDetail="true"/>
+    <ui:composition>
+        
+        <!--Modal para guardar -->
+        <p:dialog widgetVar="modal-tipo" modal="true" header="Tipos de cargos">
+            <p:ajax listener="#{cCargo.clear()}" update=":form-tipo" event="close"/>
+            <h:form id="form-tipo">
+                <p:panelGrid columns="2">
+                    <p:outputLabel value="Tipo"/>
+                    <p:inputText value="#{cCargo.car.cargo}" required="true"/>
+                    <p:commandButton value="Guardar" actionListener="#{cCargo.save()}" update=":form-tipo :tabla-tipo" oncomplete="PF('modal-tipo').hide()"/>
+                    <p:commandButton value="Cancelar" oncomplete="PF('modal-tipo').hide();"/>
+                </p:panelGrid>
+            </h:form>
+        </p:dialog>
+
+        
+        <!--Para mostrar los datos de la tabla  -->
+        <p:dialog widgetVar="modal-tabla-tipo" modal="true">
+       
+            
+            <p:fieldset legend="Tipos disponibles">
+            <h:form id="tabla-tipo">
+                <p:scrollPanel mode="native" style="width:1000px;height:400px">
+                <p:dataTable  var="c" value="#{cCargo.lista}" rows="10" id="data"
+                              paginator="true"
+                              paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                              currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                              rowsPerPageTemplate="5,10,15" rowIndexVar="i" widgetVar="tbCargo">
+                    <f:facet name="header">
+                      Cargos
+                    </f:facet>
+                    <f:facet name="paginatorTopLeft">
+                        <p:commandButton icon="pi pi-refresh" action="#{cCargo.clear()}" update="tabla-tipo"/>
+                    </f:facet>
+                    <f:facet name="paginatorBottomLeft">
+                        <p:commandButton icon="pi pi-refresh" action="#{cCargo.clear()}" update="tabla-tipo"/>
+                    </f:facet>
+                    <p:column headerText="Id" footerText="Id" sortBy="#{c.id_cargo}">
+                        <h:outputText value="#{i + 1}"/>
+                    </p:column>
+                    <p:column headerText="Cargo" footerText="Tipo de cargo">
+                        <h:outputText value="#{c.cargo}"/>
+                    </p:column>
+                    <p:column headerText="Opciones" footerText="Herramientas" style="text-align: center">
+                        <p:commandButton type="button" value="Opciones" id="slidebutton" icon="pi pi-pencil"/>
+                        <p:slideMenu trigger="slidebutton" overlay="true" my="left top" at="left bottom" style="width: 180px;">
+                            <p:menuitem value="Eliminar" action="#{cCargo.delete(c)}"  update=":msj1 :tabla-tipo:data" icon="pi pi-trash">
+                                <p:confirm header="Confirmation" message="¿Desea eliminar el registro?" icon="pi pi-exclamation-triangle" />
+                            </p:menuitem>
+                            <p:menuitem value="Modificar" action="#{cCargo.find(c)}"  update=":tb_datos :msj1" oncomplete="PF('tb').show();" icon="pi pi-spinner"/>      
+        
+                        </p:slideMenu>
+                    </p:column>
+                </p:dataTable>
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="pi pi-times" />
+                </p:confirmDialog>
+                    </p:scrollPanel>
+            </h:form>
+                </p:fieldset>
+            
+        </p:dialog>
+        
+            <!--Modal para modificar -->
+           <p:dialog header="Cargos" widgetVar="tb" id="tb_datos">
+            <h:form>
+                <p:panelGrid columns="2">
+                <p:outputLabel value="Id"/>
+                <p:inputText value="#{cCargo.car.id_cargo}" disabled="true"/>
+                <p:outputLabel value="Tipo"/>
+                <p:inputText value="#{cCargo.car.cargo}" required="true"/>
+                <p:commandButton value="Modificar" actionListener="#{cCargo.update()}" oncomplete="PF('tb').hide();" update=" :tabla-tipo:data :msj1">
+                    <p:confirm header="Confirmation" message="¿Desea realizar cambios?" icon="pi pi-exclamation-triangle" />
+                </p:commandButton>
+                <p:commandButton value="Cancelar" oncomplete="PF('tb').hide();" update=" :tabla-tipo:data" immediate="true"/>
+                </p:panelGrid>
+            </h:form>
+        </p:dialog>
+    </ui:composition>
+</html>
+

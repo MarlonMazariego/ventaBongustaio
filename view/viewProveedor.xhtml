@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+        <title>TODO supply a title</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </h:head>
+    <h:body>
+        <p:growl id="msj" showDetail="true" showSummary="true"/>
+        
+
+        <!--Para la barra de menú -->
+        <!--Es funcional para la opción de guardar, lo demás está de forma estética por el momento -->
+        <h:form>  
+            <p:toolbar id="nuevo">
+                <p:toolbarGroup align="right">
+                    <p:menubar>
+                        <p:submenu label="Agregar" icon="pi pi-file">
+                            <p:menuitem value="Agregar nuevo Proveedor"  oncomplete="PF('mostrar').show();"
+                                        icon="pi pi-plus"/>
+                        </p:submenu>
+                    
+                        
+                        <p:submenu label="Buscar" icon="pi pi-search">
+                            <p:menuitem value="Contents" url="#" />
+                            <p:submenu label="Search" icon="pi pi-search">
+                                <p:submenu label="Text">
+                                    <p:menuitem value="Workspace" url="#" />
+                                </p:submenu>
+                                <p:menuitem value="File" url="#" />
+                            </p:submenu>
+                        </p:submenu>
+                        <p:submenu label="Acciones" icon="pi pi-cog">
+                            <p:menuitem value="Acción 1" url="#" icon="pi pi-angle-double-left" />
+                            <p:menuitem value="Acción 2" url="#" icon="pi pi-angle-double-left" />
+                        </p:submenu>
+                        <p:menuitem value="Salir" icon="pi pi-times"/>
+
+                        <f:facet name="options">
+                            <p:inputText style="margin:1px 10px 1px 1px;" placeholder="Buscar"/>
+                            <p:commandButton type="button" value="Cerrar sesión" icon="pi pi-home" />
+                        </f:facet>
+                    </p:menubar>
+                </p:toolbarGroup>
+            </p:toolbar>
+            <p:sticky target="nuevo" />
+        </h:form>
+        
+  
+
+        <!--Modal para guardar -->
+        <p:dialog widgetVar="mostrar" header="Proveedor" modal="true" showEffect="clip" resizable="false" 
+                  hideEffect="slide">
+            <p:ajax event="close" listener="#{cProveedor.clean()}" update="valor" />
+            <h:form id="valor">
+                <p:panelGrid columns="2">
+                    <p:outputLabel value="Ingrese el nombre del proveedor"/>
+                    <p:inputText value="#{cProveedor.pro.nombre}" placeholder="Nombre y Apellido"/>
+                    <p:outputLabel for="ssn" value="Ingrese nit"/>
+                    <p:inputMask id="ssn" value="#{cProveedor.pro.nit}" placeholder="nit" mask="9999-999999-999-9"/>
+                    <p:outputLabel for="phone" value="Ingrese numero de telefono"/>
+                    <p:inputMask id="phone" value="#{cProveedor.pro.tel}" mask="9999-9999" placeholder="Numero de telefono"/>
+                    <p:outputLabel  value="Ingrese direccion de recidencia"/>
+                    <p:inputText value="#{cProveedor.pro.dir}" placeholder="Direccion de recidencia"/>
+                    <p:outputLabel value="Ingrese correo electronico"/>
+                    <p:inputText value="#{cProveedor.pro.email}" placeholder="Ejemplo@mail.com"/>
+
+                    <p:commandButton value="Guardar" actionListener="#{cProveedor.create()}" update=":data valor :msj" oncomplete="PF('mostrar').hide();"/>
+                    <p:commandButton value="Cancelar" actionListener="#{cProveedor.clean()}" oncomplete="PF('mostrar').hide();"   update=":data"/>
+
+                </p:panelGrid>
+            </h:form>
+        </p:dialog>
+        
+        
+        <!--Para mostrar los datos de la tabla  -->
+        <h:form id="data">
+            <p:fieldset legend="Proveedores">
+                <p:dataTable  var="pro" value="#{cProveedor.lista}" rows="10" id="data" rowIndexVar="i"
+                              paginator="true"
+                              paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                              currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                              rowsPerPageTemplate="5,10,15" >
+
+                    <f:facet name="paginatorTopRight">
+                        <p:commandButton icon="pi pi-refresh" style="width: 70px; border-radius: 40px; font-size: 1.0em" action="#{cProveedor.clean()}" update="data valor :msj"/>
+                    </f:facet>
+                    <f:facet name="paginatorBottomRight">
+                        <p:commandButton  icon="pi pi-refresh" action="#{cProveedor.init()}" style="width: 70px; border-radius: 40px; font-size: 1.0em" update="data valor :msj"/>
+                    </f:facet>
+                    <f:facet name="header">
+                        Informacion de proveedores
+                    </f:facet>
+                   
+
+                    <p:column headerText="Id" >
+                        <h:outputText value="#{i + 1}"/>
+                    </p:column>
+                    <p:column headerText="Nombre y apellido" >
+                        <h:outputText value="#{pro.nombre}"/>
+                    </p:column>
+                    <p:column headerText="NIT" >
+                        <h:outputText value="#{pro.nit}"/>
+                    </p:column>
+                    <p:column headerText="Telefono" >
+                        <h:outputText value="#{pro.tel}"/>
+                    </p:column>
+                    <p:column headerText="Direccion" >
+                        <h:outputText value="#{pro.dir}"/>
+                    </p:column>
+                    <p:column headerText="Correo Electronico" >
+                        <h:outputText value="#{pro.email}"/>
+                    </p:column>
+
+                    <p:column headerText="Opciones" style="text-align: center">
+
+                        <p:growl id="msj" showDetail="true"/>
+                        <p:menuButton value="Opciones" style="text-align: center">
+                            <p:menuitem value="Eliminar Id: #{pro.id_proveedor}" actionListener="#{cProveedor.delete(pro)}"  update="data :msj"  icon="pi pi-times" >
+                                <p:confirm  header="Confirmacion" message="¿Seguro que quieres eliminar?" icon="pi pi-exclamation-triangle"/>
+                            </p:menuitem>
+                            <p:menuitem  value="Modificar" actionListener="#{cProveedor.find(pro)}" update=":wlgdatos" oncomplete="PF('w').show();"   icon="pi pi-refresh"/>
+
+                        </p:menuButton>
+
+                    </p:column>
+
+                </p:dataTable>
+            </p:fieldset>
+        </h:form>
+
+        <!--Modal para modificar -->
+        <p:dialog header="Datos" widgetVar="w" id="wlgdatos" modal="true" showEffect="slide" hideEffect="slide">
+            <h:form id="panel">
+                <p:panelGrid columns="2">
+                    <p:outputLabel value="Id"/>
+                    <h:outputText value="#{cProveedor.pro.id_proveedor}"/>
+                    <p:outputLabel value="Modificar el nombre del proveedor"/>
+                    <p:inputText value="#{cProveedor.pro.nombre}" placeholder="Nombre y Apellido"/>
+                    <p:outputLabel for="ssn" value="Ingrese nit"/>
+                    <p:inputMask id="ssn" value="#{cProveedor.pro.nit}" placeholder="nit" mask="9999-999999-999-9"/>
+                    <p:outputLabel for="phone" value="Ingrese numero de telefono"/>
+                    <p:inputMask id="phone" value="#{cProveedor.pro.tel}" mask="9999-9999" placeholder="Numero de telefono"/>
+                    <p:outputLabel value="Modificar direccion de recidencia"/>
+                    <p:inputText value="#{cProveedor.pro.dir}" placeholder="Direccion de recidencia"/>
+                    <p:outputLabel value="Modificar correo electronico"/>
+                    <p:inputText value="#{cProveedor.pro.email}" placeholder="Correo electronico"/>
+
+                    <p:commandButton value="Modificar" actionListener="#{cProveedor.update()}" oncomplete="PF('w').hide();" update=":data"/>
+                    <p:commandButton value="Cancelar" oncomplete="PF('w').hide();" update=":data"/>
+                </p:panelGrid>
+            </h:form>
+        </p:dialog>
+        <h:form>
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <p:column>
+                    <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes"   style="width: 45%; " icon="pi pi-check"/>
+                </p:column>
+                <p:column>
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" style="width: 45%;" icon="pi pi-times"/>
+                </p:column>
+            </p:confirmDialog>
+        </h:form>
+    </h:body>
+</html>

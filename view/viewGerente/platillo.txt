@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+        <ui:include src="../views/Detalle Platillo.xhtml"/>
+        <ui:include src="../views/SCaPlatillos.xhtml"/>
+        <ui:include src="../views/Tiempo.xhtml"/>
+        <h:form>  
+            <p:toolbar id="nuevo">
+                <p:toolbarGroup align="right">
+                    <p:menubar>
+                        <p:submenu label="opciones
+                                   " icon="pi pi-file">
+                            <p:menuitem value="Detalle platillo"  oncomplete="PF('DePlatillo.modal').show();"
+                                        icon="pi pi-plus"/>
+                            <p:menuitem value="Sub Categoria Platillo"  oncomplete="PF('SCplatillo.modal').show();"
+                                        icon="pi pi-plus"/>
+                            <p:menuitem value="Tiempo"  oncomplete="PF('Tiempo.modal').show();"
+                                        icon="pi pi-plus"/>
+                        </p:submenu>
+                        <p:submenu label="Editar" icon="pi pi-pencil">
+                            <p:menuitem value="Por id" url="#" icon="pi pi-angle-double-left" />
+                        </p:submenu>
+                    
+                        <p:submenu label="Acciones" icon="pi pi-cog">
+                            <p:menuitem value="Acción 1" url="#" icon="pi pi-angle-double-left" />
+                            <p:menuitem value="Acción 2" url="#" icon="pi pi-angle-double-left" />
+                        </p:submenu>
+                
+                    </p:menubar>
+                </p:toolbarGroup>
+            </p:toolbar>
+            <p:sticky target="nuevo" />
+        </h:form> 
+        <h:form id="tabl">
+            <p:fieldset legend="Platillo">
+                <p:dataTable var="p" value="#{cPlatillo.lista}" rows="10" id="data" rowIndexVar="i"
+                             paginator="true"
+                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                             rowsPerPageTemplate="5,10,15" >
+
+                    <f:facet name="paginatorTopRight">
+                        <p:commandButton icon="pi pi-refresh" style="width: 70px; border-radius: 40px; font-size: 1.0em" action="#{cPlatillo.init()}" />
+                    </f:facet>
+                    <f:facet name="paginatorBottomRight">
+                        <p:commandButton  icon="pi pi-refresh" action="#{cPlatillo.init()}" style="width: 70px; border-radius: 40px; font-size: 1.0em" />
+                    </f:facet>
+                    <br></br>
+                    <br></br>
+                    <p:column headerText="Id" >
+                        <h:outputText value="#{i + 1}"/>
+                    </p:column>
+
+                    <p:column headerText="Nombre">
+                        <h:outputText value="#{p.nombrePlatillo}"/>
+                    </p:column>
+                    <p:column headerText="Precio">
+                        <h:outputText value="#{p.precioPlatillo}"/>
+                    </p:column>
+                    <p:column headerText="Costo">
+                        <h:outputText value="#{p.costoPlatillo}"/>
+                    </p:column>
+
+                    <p:column headerText="Sub Categoria">
+                        <h:outputText value="#{p.scaPlatillo.tipoPlatillo}"/>
+                    </p:column>
+                </p:dataTable>
+            </p:fieldset>
+        </h:form>
+    </h:body>
+</html>
+

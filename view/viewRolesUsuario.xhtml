@@ -1,147 +1,87 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
-To change this license header, choose License Headers in Project Properties.
-To change this template file, choose Tools | Templates
-and open the template in the editor.
--->
-<!DOCTYPE html>
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
-    <h:head>
-        <title>TODO supply a title</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    </h:head>
-    <h:body>
-        <p:growl id="msj"/>
-        <br></br>
-        <br></br>
+
+    <p:growl id="msj1" showDetail="true"/>
+    <ui:composition>
         
-        <!--Para la barra de menú -->
-        <!--Es funcional para la opción de guardar, lo demás está de forma estética por el momento -->
-        <h:form>  
-            <p:toolbar id="nuevo">
-                <p:toolbarGroup align="right">
-                    <p:menubar>
-                        <p:submenu label="Agregar" icon="pi pi-file">
-                            <p:menuitem value="Agregar nuevo rol de usuario"  oncomplete="PF('mostrar').show();"
-                                        icon="pi pi-plus"/>
-                        </p:submenu>
-                        <p:submenu label="Editar" icon="pi pi-pencil">
-                            <p:menuitem value="Por id" url="#" icon="pi pi-angle-double-left" />
-                        </p:submenu>
-                        <p:submenu label="Buscar" icon="pi pi-search">
-                            <p:menuitem value="Contents" url="#" />
-                            <p:submenu label="Search" icon="pi pi-search">
-                                <p:submenu label="Text">
-                                    <p:menuitem value="Workspace" url="#" />
-                                </p:submenu>
-                                <p:menuitem value="File" url="#" />
-                            </p:submenu>
-                        </p:submenu>
-                        <p:submenu label="Acciones" icon="pi pi-cog">
-                            <p:menuitem value="Acción 1" url="#" icon="pi pi-angle-double-left" />
-                            <p:menuitem value="Acción 2" url="#" icon="pi pi-angle-double-left" />
-                        </p:submenu>
-                        <p:menuitem value="Salir" icon="pi pi-times"/>
-
-                        <f:facet name="options">
-                            <p:inputText style="margin:1px 10px 1px 1px;" placeholder="Buscar"/>
-                            <p:commandButton type="button" value="Cerrar sesión" icon="pi pi-home" />
-                        </f:facet>
-                    </p:menubar>
-                </p:toolbarGroup>
-            </p:toolbar>
-            <p:sticky target="nuevo" />
-        </h:form>
-         
-        <!--Modal para guardar -->
-        <p:dialog widgetVar="mostrar" header="Roles de usuario" modal="true" showEffect="clip" resizable="false">
-            <p:ajax event="close" listener="#{CRolesUsuario.clean()}" update="valor"/>
-            <h:form id="valor">
+        
+        <p:dialog widgetVar="modal-tipo" modal="true" header="Roles de usuario">
+            <p:ajax listener="#{CRolesUsuario.clean()}" update=":form-tipo" event="close"/>
+            <h:form id="form-tipo">
                 <p:panelGrid columns="2">
-                    <p:outputLabel value="Ingrese el nuevo rol"/>
-                    <p:inputText value="#{CRolesUsuario.rolUsu.rolUser}" placeholder="Gerente, mesero, etc"/>
-
-                    <p:commandButton value="Guardar" actionListener="#{CRolesUsuario.create()}" update=":data valor :msj" oncomplete="PF('mostrar').hide();"/>
-                    <p:commandButton value="Cancelar" actionListener="#{CRolesUsuario.clean()}" oncomplete="PF('mostrar').hide();"   update=":data"/>
-                    
+                    <p:outputLabel value="Tipo"/>
+                    <p:inputText value="#{CRolesUsuario.rolUsu.rolUser}" required="true"/>
+                    <p:commandButton value="Guardar" actionListener="#{CRolesUsuario.create()}" update=":form-tipo :tabla-tipo" oncomplete="PF('modal-tipo').hide()"/>
+                     <p:commandButton value="Cancelar" oncomplete="PF('modal-tipo').hide();"/>
                 </p:panelGrid>
             </h:form>
         </p:dialog>
-        
-        
+
         <!--Para mostrar los datos de la tabla  -->
-        <h:form id="data"> 
-            <p:fieldset legend="Roles de usuario">
-                <p:dataTable  var="rol" value="#{CRolesUsuario.lista}" rows="10" id="data" rowIndexVar="i"
+        <p:dialog widgetVar="modal-tabla-tipo" modal="true">
+            <p:fieldset legend="Tipos disponibles">
+            <h:form id="tabla-tipo">
+                <p:scrollPanel mode="native" style="width:1000px;height:400px">
+                    <p:dataTable  var="r" value="#{CRolesUsuario.lista}" rows="10" id="data"
                               paginator="true"
                               paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                               currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
-                              rowsPerPageTemplate="5,10,15" >
-
-                    <f:facet name="paginatorTopRight">
-                        <p:commandButton icon="pi pi-refresh" style="width: 70px; border-radius: 40px; font-size: 1.0em" action="#{CRolesUsuario.init()}" update="data valor :msj"/>
-                    </f:facet>
-                    <f:facet name="paginatorBottomRight">
-                        <p:commandButton  icon="pi pi-refresh" action="#{CRolesUsuario.init()}" style="width: 70px; border-radius: 40px; font-size: 1.0em" update="data valor :msj"/>
-                    </f:facet>
+                              rowsPerPageTemplate="5,10,15" rowIndexVar="i" widgetVar="tbRoledUusuario">
                     <f:facet name="header">
-                        Informacion de los Roles de ususario
+                      Roles de usuario
                     </f:facet>
-                    <br></br>
-                    <br></br>
-                   
-                    <p:column headerText="Id" >
+                    <f:facet name="paginatorTopLeft">
+                        <p:commandButton icon="pi pi-refresh" action="#{CRolesUsuario.clean()}" update="tabla-tipo"/>
+                    </f:facet>
+                    <f:facet name="paginatorBottomLeft">
+                        <p:commandButton icon="pi pi-refresh" action="#{CRolesUsuario.clean()}" update="tabla-tipo"/>
+                    </f:facet>
+                        <p:column headerText="Id" footerText="Id" sortBy="#{r.id_rolesUsuario}">
                         <h:outputText value="#{i + 1}"/>
                     </p:column>
-                    <p:column headerText="Nombre y apellido" >
-                        <h:outputText value="#{rol.rolUser}"/>
+                    <p:column headerText="Roles de usuario" footerText="Roles de usuario">
+                        <h:outputText value="#{r.rolUser}"/>
                     </p:column>
-                    
-                    <p:column headerText="Opciones" style="text-align: center">
-
-                        <p:growl id="msj" showDetail="true"/>
-                        <p:menuButton value="Opciones" style="text-align: center">
-                            <p:menuitem value="Eliminar Id: #{rol.id_rolesUsuario}" actionListener="#{CRolesUsuario.delete(rol)}"  update="data :msj"  icon="pi pi-times" >
-                                <p:confirm  header="Confirmacion" message="¿Seguro que quieres eliminar?" icon="pi pi-exclamation-triangle"/>
+                    <p:column headerText="Opciones" footerText="Opciones" style="text-align: center">
+                        <p:commandButton type="button" value="Opciones" id="slidebutton" icon="pi pi-pencil"/>
+                        <p:slideMenu trigger="slidebutton" overlay="true" my="left top" at="left bottom" style="width: 180px;">
+                            <p:menuitem value="Eliminar" action="#{CRolesUsuario.delete(r)}"  update=":msj1 :tabla-tipo:data" icon="pi pi-trash">
+                                <p:confirm header="Confirmation" message="¿Desea eliminar el registro?" icon="pi pi-exclamation-triangle" />
                             </p:menuitem>
-                            <p:menuitem  value="Modificar" actionListener="#{CRolesUsuario.find(rol)}" update=":wlgdatos" oncomplete="PF('w').show();"   icon="pi pi-refresh"/>
-
-                        </p:menuButton>
-
+                            <p:menuitem value="Modificar" action="#{CRolesUsuario.find(r)}"  update=":tb_datos :msj1" oncomplete="PF('tb').show();" icon="pi pi-spinner"/>      
+        
+                        </p:slideMenu>
                     </p:column>
-
                 </p:dataTable>
-            </p:fieldset>
-        </h:form>
-
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="pi pi-times" />
+                </p:confirmDialog>
+                    </p:scrollPanel>
+            </h:form>
+                </p:fieldset>
+            
+        </p:dialog>
+        
         <!--Modal para modificar -->
-        <p:dialog header="Datos" widgetVar="w" id="wlgdatos">
-            <h:form id="panel">
-                <p:panelGrid columns="2">
-                    <p:outputLabel value="Id"/>
-                    <h:outputText value="#{CRolesUsuario.rolUsu.id_rolesUsuario}"/>
-                    <p:outputLabel value="Modificar rol"/>
-                    <p:inputText value="#{CRolesUsuario.rolUsu.rolUser}" placeholder="Gerente, mesero, etc"/>
-                    
-
-                    <p:commandButton value="Modificar" actionListener="#{CRolesUsuario.update()}" oncomplete="PF('w').hide();" update=":data"/>
-                    <p:commandButton value="Cancelar" oncomplete="PF('w').hide();" update=":data"/>
+           <p:dialog header="Tipo de sucursal" widgetVar="tb" id="tb_datos">
+               <h:form>
+                   <p:panelGrid columns="2">
+                <p:outputLabel value="Id"/>
+                <h:outputText value="#{CRolesUsuario.rolUsu.id_rolesUsuario}"/>
+                <p:outputLabel value="Tipo"/>
+                <p:inputText value="#{CRolesUsuario.rolUsu.rolUser}" required="true"/>
+                <p:commandButton value="Modificar" actionListener="#{CRolesUsuario.update()}" oncomplete="PF('tb').hide();" update=" :tabla-tipo:data :msj1">
+                    <p:confirm header="Confirmation" message="¿Desea realizar cambios?" icon="pi pi-exclamation-triangle" />
+                </p:commandButton>
+                <p:commandButton value="Cancelar" oncomplete="PF('tb').hide();" update=" :tabla-tipo:data" immediate="true"/>
                 </p:panelGrid>
             </h:form>
         </p:dialog>
-        <h:form>
-            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
-                <p:column>
-                    <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes"   style="width: 45%; " icon="pi pi-check"/>
-                </p:column>
-                <p:column>
-                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" style="width: 45%;" icon="pi pi-times"/>
-                </p:column>
-            </p:confirmDialog>
-        </h:form>
-    </h:body>
+    </ui:composition>
 </html>
-

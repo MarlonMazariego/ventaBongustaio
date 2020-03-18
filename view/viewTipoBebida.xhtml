@@ -10,18 +10,18 @@ and open the template in the editor.
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
-        <title>Bebidas</title>
+        <title>Tipo bebidas</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     </h:head>
     <h:body>
 
         <p:growl id="msj"/>
-        <h:form>  
+         <h:form>  
             <p:toolbar id="nuevo">
                 <p:toolbarGroup align="right">
                     <p:menubar>
                         <p:submenu label="Agregar" icon="pi pi-file">
-                            <p:menuitem value="Agregar bebidas"  oncomplete="PF('mostrar').show();"
+                            <p:menuitem value="Tipo de bebidas"  oncomplete="PF('mostrar').show();"
                                         icon="pi pi-plus"/>
                         </p:submenu>
                         <p:submenu label="Editar" icon="pi pi-pencil">
@@ -55,17 +55,9 @@ and open the template in the editor.
         <p:dialog widgetVar="mostrar" header="Bebidas" modal="true" showEffect="clip" resizable="false">
             <h:form id="valor">
                 <p:panelGrid columns="2">
-                    <p:outputLabel value="Ingrese el nombre de bebida"/>
-                    <p:inputText value="#{cBebidas.bebida.nombre_bebida}" placeholder="Nombre de bebida"/>
-                     <p:outputLabel value="Tipo de bebidas"/>
-                     <p:selectOneMenu value="#{cBebidas.tipoBebida.id_tipoBebida}">
-                         <f:selectItems value="#{cTipoBebida.lista}" var="tb"
-                                        itemValue="#{tb.id_tipoBebida}"
-                                        itemLabel="#{tb.tipo}"/>                   
-                    </p:selectOneMenu> 
-                    <p:outputLabel value="Precio bebida"/>
-                    <p:inputText value="#{cBebidas.bebida.precio_bebida}" placeholder="Precio de bebida"/>
-                    <p:commandButton value="Guardar" actionListener="#{cBebidas.create()}" update=":data valor :msj" oncomplete="PF('mostrar').hide();"/>
+                    <p:outputLabel value="Ingrese el tipo de bebida"/>
+                    <p:inputText value="#{cTipoBebida.tipBeb.tipo}" placeholder="Tipo de bebida"/>
+                    <p:commandButton value="Guardar" actionListener="#{cTipoBebida.create()}" update=":data valor :msj" oncomplete="PF('mostrar').hide();"/>
                     <p:commandButton value="Cancelar" oncomplete="PF('mostrar').hide();" update=":data"/>
                 </p:panelGrid>
             </h:form>
@@ -73,16 +65,16 @@ and open the template in the editor.
 
         <h:form id="data">
             <p:fieldset legend="Bebidas">
-                <p:dataTable  var="bb" value="#{cBebidas.lista}" rows="10" id="data" rowIndexVar="i"
+                <p:dataTable  var="tbb" value="#{cTipoBebida.lista}" rows="10" id="data" rowIndexVar="i"
                               paginator="true"
                               paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                               currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
                               rowsPerPageTemplate="5,10,15">
                     <f:facet name="paginatorTopRight">
-                        <p:commandButton icon="pi pi-refresh" style="width: 70px; border-radius: 40px; font-size: 1.0em" action="#{cBebidas.init()}" update="data valor :msj"/>
+                        <p:commandButton icon="pi pi-refresh" style="width: 70px; border-radius: 40px; font-size: 1.0em" action="#{cTipoBebida.init()}" update="data valor :msj"/>
                     </f:facet>
                     <f:facet name="paginatorBottomRight">
-                        <p:commandButton  icon="pi pi-refresh" action="#{cBebidas.init()}" style="width: 70px; border-radius: 40px; font-size: 1.0em" update="data valor :msj"/>
+                        <p:commandButton  icon="pi pi-refresh" action="#{cTipoBebida.init()}" style="width: 70px; border-radius: 40px; font-size: 1.0em" update="data valor :msj"/>
                     </f:facet>
 
                     <f:facet name="header">
@@ -91,25 +83,17 @@ and open the template in the editor.
                     <p:column headerText="Id" >
                         <h:outputText value="#{i + 1}"/>
                     </p:column>
-                    <p:column headerText="Nombre de bebidas" >
-                        <h:outputText value="#{bb.nombre_bebida}"/>
-                    </p:column>
-                    <p:column headerText="Tipo bebidas" >
-                        <h:outputText value="#{bb.id_tipoBebida.tipo}"/>
-                    </p:column>
-                    <p:column headerText="Precio bebidas" >
-                        <h:outputText value="#{bb.precio_bebida}"/>
+                    <p:column headerText="Tipo de bebidas" >
+                        <h:outputText value="#{tbb.tipo}"/>
                     </p:column>
                     <p:column headerText="Opciones" style="text-align: center">
                         <p:growl id="msj" showDetail="true"/>
                         <p:menuButton value="Opciones" style="text-align: center">
-                            <p:menuitem value="Eliminar Id: #{bb.id_bebida}" actionListener="#{cBebidas.delete(bb)}"  update="data :msj"  icon="pi pi-times" >
+                            <p:menuitem value="Eliminar Id: #{tbb.id_tipoBebida}" actionListener="#{cTipoBebida.delete(tbb)}"  update="data :msj"  icon="pi pi-times" >
                                 <p:confirm  header="Confirmacion" message="¿Seguro que quieres eliminar?" icon="pi pi-exclamation-triangle"/>
                             </p:menuitem>
-                            <p:menuitem  value="Modificar" actionListener="#{cBebidas.find(bb)}" update=":wlgdatos" oncomplete="PF('w').show();"   icon="pi pi-refresh"/>
-
+                            <p:menuitem  value="Modificar" actionListener="#{cTipoBebida.find(tbb)}" update=":wlgdatos" oncomplete="PF('w').show();"   icon="pi pi-refresh"/>
                         </p:menuButton>
-
                     </p:column>
 
                 </p:dataTable>
@@ -120,18 +104,10 @@ and open the template in the editor.
             <h:form id="panel">
                 <p:panelGrid columns="2">
                     <p:outputLabel value="Id"/>
-                    <p:inputText value="#{cBebidas.bebida.id_bebida}" readonly="true"/>
-                    <p:outputLabel value="Ingrese el nombre de bebida"/>
-                    <p:inputText value="#{cBebidas.bebida.nombre_bebida}" placeholder="Nombre de bebida"/>
-                     <p:outputLabel value="Tipo de bebidas"/>
-                     <p:selectOneMenu value="#{cBebidas.tipoBebida.id_tipoBebida}">
-                         <f:selectItems value="#{cTipoBebida.lista}" var="tbs"
-                                        itemValue="#{tbs.id_tipoBebida}"
-                                        itemLabel="#{tbs.tipo}"/>                   
-                    </p:selectOneMenu> 
-                    <p:outputLabel value="Precio bebida"/>
-                    <p:inputText value="#{cBebidas.bebida.precio_bebida}" placeholder="Precio de bebida"/>               
-                    <p:commandButton value="Modificar" actionListener="#{cBebidas.update()}" oncomplete="PF('w').hide();" update=":data"/>
+                    <h:outputText value="#{cTipoBebida.tipBeb.id_tipoBebida}"/>
+                    <p:outputLabel value="Tipo de bebida"/>
+                    <p:inputText value="#{cTipoBebida.tipBeb.tipo}" placeholder="Tipo de bebida"/>                   
+                    <p:commandButton value="Modificar" actionListener="#{cTipoBebida.update()}" oncomplete="PF('w').hide();" update=":data"/>
                     <p:commandButton value="Cancelar" oncomplete="PF('w').hide();" update=":data"/>
                 </p:panelGrid>
             </h:form>

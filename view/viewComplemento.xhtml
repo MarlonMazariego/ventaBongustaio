@@ -10,7 +10,7 @@ and open the template in the editor.
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
-        <title>Bebidas</title>
+        <title>Complemento</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     </h:head>
     <h:body>
@@ -21,7 +21,7 @@ and open the template in the editor.
                 <p:toolbarGroup align="right">
                     <p:menubar>
                         <p:submenu label="Agregar" icon="pi pi-file">
-                            <p:menuitem value="Agregar bebidas"  oncomplete="PF('mostrar').show();"
+                            <p:menuitem value="Agregar complemento"  oncomplete="PF('mostrar').show();"
                                         icon="pi pi-plus"/>
                         </p:submenu>
                         <p:submenu label="Editar" icon="pi pi-pencil">
@@ -52,61 +52,63 @@ and open the template in the editor.
             <p:sticky target="nuevo" />
         </h:form>
         <br/>
-        <p:dialog widgetVar="mostrar" header="Bebidas" modal="true" showEffect="clip" resizable="false">
+        <p:dialog widgetVar="mostrar" header="Complemento" modal="true" showEffect="clip" resizable="false">
             <h:form id="valor">
                 <p:panelGrid columns="2">
-                    <p:outputLabel value="Ingrese el nombre de bebida"/>
-                    <p:inputText value="#{cBebidas.bebida.nombre_bebida}" placeholder="Nombre de bebida"/>
-                     <p:outputLabel value="Tipo de bebidas"/>
-                     <p:selectOneMenu value="#{cBebidas.tipoBebida.id_tipoBebida}">
-                         <f:selectItems value="#{cTipoBebida.lista}" var="tb"
-                                        itemValue="#{tb.id_tipoBebida}"
-                                        itemLabel="#{tb.tipo}"/>                   
+                    <p:outputLabel value="Nombre de complemento"/>
+                    <p:inputText value="#{cComplemento.com.nombre_complemento}" placeholder="Nombre de complemento"/>
+                      <p:outputLabel value="Tipo de Complemento"/>
+                    <p:selectOneMenu value="#{cComplemento.tipCom.id_tipoCom}">
+                        <f:selectItems value="#{cTipoComplemento.lista}" var="tcc"
+                                       itemValue="#{tcc.id_tipoCom}"
+                                       itemLabel="#{tcc.nombreTComp}"/>                   
                     </p:selectOneMenu> 
-                    <p:outputLabel value="Precio bebida"/>
-                    <p:inputText value="#{cBebidas.bebida.precio_bebida}" placeholder="Precio de bebida"/>
-                    <p:commandButton value="Guardar" actionListener="#{cBebidas.create()}" update=":data valor :msj" oncomplete="PF('mostrar').hide();"/>
+                     <p:outputLabel value="Precio complemento"/>
+                     <p:inputText value="#{cComplemento.com.precio_complemento}" placeholder="Precio de complemento"/>                  
+                     <p:commandButton value="Guardar" actionListener="#{cComplemento.create()}" update=":data valor :msj" oncomplete="PF('mostrar').hide();"/>
                     <p:commandButton value="Cancelar" oncomplete="PF('mostrar').hide();" update=":data"/>
                 </p:panelGrid>
             </h:form>
         </p:dialog>
-
+        
         <h:form id="data">
-            <p:fieldset legend="Bebidas">
-                <p:dataTable  var="bb" value="#{cBebidas.lista}" rows="10" id="data" rowIndexVar="i"
+            <p:fieldset legend="Complementos">
+                <p:dataTable  var="cp" value="#{cComplemento.lista}" rows="10" id="data" rowIndexVar="i"
                               paginator="true"
                               paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                               currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
                               rowsPerPageTemplate="5,10,15">
-                    <f:facet name="paginatorTopRight">
-                        <p:commandButton icon="pi pi-refresh" style="width: 70px; border-radius: 40px; font-size: 1.0em" action="#{cBebidas.init()}" update="data valor :msj"/>
+                    
+                      <f:facet name="paginatorTopRight">
+                          <p:commandButton icon="pi pi-refresh" style="width: 70px; border-radius: 40px; font-size: 1.0em" action="#{cComplemento.init()}" update="data valor :msj"/>
                     </f:facet>
                     <f:facet name="paginatorBottomRight">
-                        <p:commandButton  icon="pi pi-refresh" action="#{cBebidas.init()}" style="width: 70px; border-radius: 40px; font-size: 1.0em" update="data valor :msj"/>
+                        <p:commandButton  icon="pi pi-refresh" action="#{cComplemento.init()}" style="width: 70px; border-radius: 40px; font-size: 1.0em" update="data valor :msj"/>
                     </f:facet>
 
+
                     <f:facet name="header">
-                        Informacion de bebidas
-                    </f:facet>
+                        Informacion de complementos
+                         </f:facet>
                     <p:column headerText="Id" >
                         <h:outputText value="#{i + 1}"/>
                     </p:column>
-                    <p:column headerText="Nombre de bebidas" >
-                        <h:outputText value="#{bb.nombre_bebida}"/>
+                    <p:column headerText="Nombre de complemento" >
+                        <h:outputText value="#{cp.nombre_complemento}"/>
+                    </p:column>     
+                     <p:column headerText="Id tipo complemento" >
+                         <h:outputText value="#{cp.id_tipoCom.nombreTComp}"/>
                     </p:column>
-                    <p:column headerText="Tipo bebidas" >
-                        <h:outputText value="#{bb.id_tipoBebida.tipo}"/>
-                    </p:column>
-                    <p:column headerText="Precio bebidas" >
-                        <h:outputText value="#{bb.precio_bebida}"/>
+                        <p:column headerText="Precio de complemento" >
+                            <h:outputText value="#{cp.precio_complemento}"/>
                     </p:column>
                     <p:column headerText="Opciones" style="text-align: center">
                         <p:growl id="msj" showDetail="true"/>
                         <p:menuButton value="Opciones" style="text-align: center">
-                            <p:menuitem value="Eliminar Id: #{bb.id_bebida}" actionListener="#{cBebidas.delete(bb)}"  update="data :msj"  icon="pi pi-times" >
+                            <p:menuitem value="Eliminar Id: #{cp.id_complemento}" actionListener="#{cComplemento.delete(cp)}"  update="data :msj"  icon="pi pi-times" >
                                 <p:confirm  header="Confirmacion" message="¿Seguro que quieres eliminar?" icon="pi pi-exclamation-triangle"/>
                             </p:menuitem>
-                            <p:menuitem  value="Modificar" actionListener="#{cBebidas.find(bb)}" update=":wlgdatos" oncomplete="PF('w').show();"   icon="pi pi-refresh"/>
+                            <p:menuitem  value="Modificar" actionListener="#{cComplemento.find(cp)}" update=":wlgdatos" oncomplete="PF('w').show();"   icon="pi pi-refresh"/>
 
                         </p:menuButton>
 
@@ -120,18 +122,18 @@ and open the template in the editor.
             <h:form id="panel">
                 <p:panelGrid columns="2">
                     <p:outputLabel value="Id"/>
-                    <p:inputText value="#{cBebidas.bebida.id_bebida}" readonly="true"/>
-                    <p:outputLabel value="Ingrese el nombre de bebida"/>
-                    <p:inputText value="#{cBebidas.bebida.nombre_bebida}" placeholder="Nombre de bebida"/>
-                     <p:outputLabel value="Tipo de bebidas"/>
-                     <p:selectOneMenu value="#{cBebidas.tipoBebida.id_tipoBebida}">
-                         <f:selectItems value="#{cTipoBebida.lista}" var="tbs"
-                                        itemValue="#{tbs.id_tipoBebida}"
-                                        itemLabel="#{tbs.tipo}"/>                   
-                    </p:selectOneMenu> 
-                    <p:outputLabel value="Precio bebida"/>
-                    <p:inputText value="#{cBebidas.bebida.precio_bebida}" placeholder="Precio de bebida"/>               
-                    <p:commandButton value="Modificar" actionListener="#{cBebidas.update()}" oncomplete="PF('w').hide();" update=":data"/>
+                    <h:outputText value="#{cComplemento.tipCom.id_tipoCom}"/>
+                    <p:outputLabel value="Nombre de complemento"/>
+                    <p:inputText value="#{cComplemento.com.nombre_complemento}" placeholder="Nombre de complemento"/>
+                       <p:outputLabel value="Tipo de Complemento"/>
+                    <p:selectOneMenu value="#{cComplemento.tipCom.id_tipoCom}">
+                        <f:selectItems value="#{cTipoComplemento.lista}" var="tcc"
+                                       itemValue="#{tcc.id_tipoCom}"
+                                       itemLabel="#{tcc.nombreTComp}"/>                   
+                    </p:selectOneMenu>
+                     <p:outputLabel value="Precio complemento"/>
+                     <p:inputText value="#{cComplemento.com.precio_complemento}" placeholder="Precio de complemento"/>                 
+                     <p:commandButton value="Modificar" actionListener="#{cComplemento.update()}" oncomplete="PF('w').hide();" update=":data"/>
                     <p:commandButton value="Cancelar" oncomplete="PF('w').hide();" update=":data"/>
                 </p:panelGrid>
             </h:form>

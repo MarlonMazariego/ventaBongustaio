@@ -10,18 +10,18 @@ and open the template in the editor.
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
-        <title>Detalle platillo</title>
+        <title>Detalle Platillo</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     </h:head>
     <h:body>
 
         <p:growl id="msj"/>
-         <h:form>  
+        <h:form>  
             <p:toolbar id="nuevo">
                 <p:toolbarGroup align="right">
                     <p:menubar>
                         <p:submenu label="Agregar" icon="pi pi-file">
-                            <p:menuitem value="Detalle platillo"  oncomplete="PF('mostrar').show();"
+                            <p:menuitem value="Agregar detalle platillo"  oncomplete="PF('mostrar').show();"
                                         icon="pi pi-plus"/>
                         </p:submenu>
                         <p:submenu label="Editar" icon="pi pi-pencil">
@@ -54,43 +54,57 @@ and open the template in the editor.
         <br/>
         <p:dialog widgetVar="mostrar" header="Detalle platillo" modal="true" showEffect="clip" resizable="false">
             <h:form id="valor">
-                <p:panelGrid columns="2">
-                    <p:outputLabel value="Cantidad platillo"/>
-                    <p:inputText value="#{cDetallePlatillo.detallePlatillo.cantidad_producto}" placeholder="Cantidad platillo"/>                   
-                    <p:commandButton value="Guardar" actionListener="#{cDetallePlatillo.create()}" update=":data valor :msj" oncomplete="PF('mostrar').hide();"/>
+                <p:panelGrid columns="2">                 
+                      <p:outputLabel value="Id platillo"/>
+                      <p:selectOneMenu value="#{cDetallePlatillo.detPla.id_platillo}">
+                          <f:selectItems value="#{cPlatillo.lista}" var="dtp"
+                                         itemValue="#{dtp.id_platillo}"
+                                         itemLabel="#{dtp.nombrePlatillo}"/>                   
+                    </p:selectOneMenu> 
+                        <p:outputLabel value="Id producto"/>
+                        <p:selectOneMenu value="#{cDetallePlatillo.pro.id_producto}">
+                            <f:selectItems value="#{cProducto.lista}" var="dtpr"
+                                           itemValue="#{dtpr.id_producto}"
+                                           itemLabel="#{dtpr.nombre_producto}"/>                   
+                    </p:selectOneMenu> 
+                     <p:outputLabel value="Cantidad producto"/>
+                     <p:inputText value="#{cDetallePlatillo.detPla.cantidad_producto}" placeholder="Cantidad producto"/>                  
+                     <p:commandButton value="Guardar" actionListener="#{cDetallePlatillo.create()}" update=":data valor :msj" oncomplete="PF('mostrar').hide();"/>
                     <p:commandButton value="Cancelar" oncomplete="PF('mostrar').hide();" update=":data"/>
                 </p:panelGrid>
             </h:form>
         </p:dialog>
-
+        
         <h:form id="data">
-            <p:fieldset legend="Detalle platillo">
+            <p:fieldset legend="Detalle platillos">
                 <p:dataTable  var="dp" value="#{cDetallePlatillo.lista}" rows="10" id="data" rowIndexVar="i"
                               paginator="true"
                               paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                               currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
                               rowsPerPageTemplate="5,10,15">
-                    <f:facet name="paginatorTopRight">
-                        <p:commandButton icon="pi pi-refresh" style="width: 70px; border-radius: 40px; font-size: 1.0em" action="#{cDetallePlatillo.init()}" update="data valor :msj"/>
+                    
+                      <f:facet name="paginatorTopRight">
+                          <p:commandButton icon="pi pi-refresh" style="width: 70px; border-radius: 40px; font-size: 1.0em" action="#{cDetallePlatillo.init()}" update="data valor :msj"/>
                     </f:facet>
                     <f:facet name="paginatorBottomRight">
                         <p:commandButton  icon="pi pi-refresh" action="#{cDetallePlatillo.init()}" style="width: 70px; border-radius: 40px; font-size: 1.0em" update="data valor :msj"/>
                     </f:facet>
 
+
                     <f:facet name="header">
-                        Informacion detalle platillo
-                    </f:facet>
+                        Detalle platillos
+                         </f:facet>
                     <p:column headerText="Id" >
                         <h:outputText value="#{i + 1}"/>
                     </p:column>
-                    <p:column headerText="Id platillo" >
+                    <p:column headerText="ID platillos" >
                         <h:outputText value="#{dp.id_platillo}"/>
-                    </p:column>
-                     <p:column headerText="Id producto" >
+                    </p:column>     
+                     <p:column headerText="ID productos" >
                          <h:outputText value="#{dp.id_producto}"/>
                     </p:column>
-                    <p:column headerText="cantidad producto" >
-                        <h:outputText value="#{dp.cantidad_producto}"/>
+                        <p:column headerText="Cantidad productos" >
+                            <h:outputText value="#{dp.cantidad_producto}"/>
                     </p:column>
                     <p:column headerText="Opciones" style="text-align: center">
                         <p:growl id="msj" showDetail="true"/>
@@ -98,8 +112,10 @@ and open the template in the editor.
                             <p:menuitem value="Eliminar Id: #{dp.id_detallePlatillo}" actionListener="#{cDetallePlatillo.delete(dp)}"  update="data :msj"  icon="pi pi-times" >
                                 <p:confirm  header="Confirmacion" message="¿Seguro que quieres eliminar?" icon="pi pi-exclamation-triangle"/>
                             </p:menuitem>
-                            <p:menuitem  value="Modificar" actionListener="#{cDetallePlatillo.find(tbb)}" update=":wlgdatos" oncomplete="PF('w').show();"   icon="pi pi-refresh"/>
+                            <p:menuitem  value="Modificar" actionListener="#{cDetallePlatillo.find(dp)}" update=":wlgdatos" oncomplete="PF('w').show();"   icon="pi pi-refresh"/>
+
                         </p:menuButton>
+
                     </p:column>
 
                 </p:dataTable>
@@ -109,11 +125,23 @@ and open the template in the editor.
         <p:dialog header="Datos" widgetVar="w" id="wlgdatos">
             <h:form id="panel">
                 <p:panelGrid columns="2">
-                    <p:outputLabel value="Id"/>
-                    <h:outputText value="#{cDetallePlatillo.detallePlatillo.id_detallePlatillo}"/>
-                      <p:outputLabel value="Cantidad platillo"/>
-                    <p:inputText value="#{cDetallePlatillo.detallePlatillo.cantidad_producto}" placeholder="Cantidad platillo"/>                   
-                    <p:commandButton value="Modificar" actionListener="#{cDetallePlatillo.update()}" oncomplete="PF('w').hide();" update=":data"/>
+                     <p:outputLabel value="Id"/>
+                     <h:outputText value="#{cDetallePlatillo.detPla.id_detallePlatillo}"/>
+                     <p:outputLabel value="Id platillo"/>
+                      <p:selectOneMenu value="#{cDetallePlatillo.detPla.id_platillo}">
+                          <f:selectItems value="#{cPlatillo.lista}" var="dtp"
+                                         itemValue="#{dtp.id_platillo}"
+                                         itemLabel="#{dtp.nombrePlatillo}"/>                   
+                    </p:selectOneMenu> 
+                        <p:outputLabel value="Id producto"/>
+                        <p:selectOneMenu value="#{cDetallePlatillo.pro.id_producto}">
+                            <f:selectItems value="#{cProducto.lista}" var="dtpr"
+                                           itemValue="#{dtpr.id_producto}"
+                                           itemLabel="#{dtpr.nombre_producto}"/>                   
+                    </p:selectOneMenu> 
+                     <p:outputLabel value="Cantidad producto"/>
+                     <p:inputText value="#{cDetallePlatillo.detPla.cantidad_producto}" placeholder="Cantidad producto"/>                
+                     <p:commandButton value="Modificar" actionListener="#{cDetallePlatillo.update()}" oncomplete="PF('w').hide();" update=":data"/>
                     <p:commandButton value="Cancelar" oncomplete="PF('w').hide();" update=":data"/>
                 </p:panelGrid>
             </h:form>
@@ -130,3 +158,4 @@ and open the template in the editor.
         </h:form>
     </h:body>
 </html>
+

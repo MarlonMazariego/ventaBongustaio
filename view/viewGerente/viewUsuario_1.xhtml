@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3c.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui" xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Titulo</title>
+    </h:head>
+    <h:body>
+        
+        <!-- NUEVO USUARIO BOTON -->
+        <p:growl id="msj" severity="info, error" showDetail="true" />
+        <p:commandButton value="Nuevo usuario" type="button" onclick="PF('dialogo').show()" id="data"/>
+        <!--Busqueda del empleado al que se le asignara el usuario, (NUEVO USUARIO) -->
+        <p:dialog modal="true" header="Empleado" widgetVar="personal" >
+            <h:form>
+                <p:dataTable value="#{CPersona.lista}" var="p" emptyMessage="No se encontraron empleados" >
+
+                    <p:column headerText="Nombre">
+                        <h:outputText value="#{p.nombres}"/>
+                    </p:column>
+                    <p:column headerText="Apellido">
+                        <h:outputText value="#{p.apellidos}"/>
+                    </p:column>
+                    <p:column headerText="Documento">
+                        <h:outputText value="#{p.dui}"/>
+                    </p:column>
+                    <p:column headerText="Seleccionar">
+                        <p:commandButton value="Seleccionar" actionListener="#{CUsuario.assign(p)}" update=":data :msj" oncomplete="PF('personal').hide(); PF('dialogo').show()"/>                       
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+        </p:dialog>
+        <!--FIN -->
+        <!--Busqueda del empleado al que se le asignara el usuario, (MODIFICAR USUARIO) -->     
+        <p:dialog modal="true" header="Empleado" widgetVar="persona1" >
+            <h:form>
+                <p:dataTable value="#{CPersona.lista}" var="p" emptyMessage="No se encontraron empleados" >
+
+                    <p:column headerText="Nombre">
+                        <h:outputText value="#{p.nombres}"/>
+                    </p:column>
+                    <p:column headerText="Apellido">
+                        <h:outputText value="#{p.apellidos}"/>
+                    </p:column>
+                    <p:column headerText="Documento">
+                        <h:outputText value="#{p.dui}"/>
+                    </p:column>
+                    <p:column headerText="Seleccionar">
+                        <p:commandButton value="Seleccionar" actionListener="#{CUsuario.assign(p)}" update=":modificar :msj" oncomplete="PF('persona1').hide(); PF('modificar').show()"/>                       
+                    </p:column>
+                </p:dataTable>
+            </h:form>
+        </p:dialog>
+        <!--FIN -->
+        <!--FORMULARIO PARA NUEVO USUARIO-->
+        <p:dialog modal="true" header="Dialogo" widgetVar="dialogo" id="datos">           
+            <h:form >
+                <div class="ui-g">
+                    <div class="ui-g-3"></div>    
+                    <div class="ui-g-3">
+                        <p:outputLabel value="Empleado"/>
+                    </div>    
+                    <div class="ui-g-3">
+
+                        <p:selectOneMenu value="#{CUsuario.per.id_persona}">
+                            <f:selectItems value="#{CPersona.lista}" var="p" 
+                                           itemLabel="#{p.nombres} #{p.apellidos}"
+                                           itemValue="#{p.id_persona}"/>
+                            <p:ajax process="@this"/>
+                        </p:selectOneMenu>                    
+                    </div>    
+                    <div class="ui-g-1">
+                        <p:commandButton value="Buscar" onclick="PF('personal').show()"/>
+                    </div>    
+                    <div class="ui-g-2"></div>    
+                </div>                
+                <div class="ui-g">
+                    <div class="ui-g-3"></div>    
+                    <div class="ui-g-3">
+                        <p:outputLabel value="Usuario"/>
+                    </div>    
+                    <div class="ui-g-3">
+                        <p:inputText value="#{cusuario.usu.nickName}"/>
+                    </div>    
+                    <div class="ui-g-3"></div>    
+                </div>
+                <div class="ui-g">
+                    <div class="ui-g-3"></div>    
+                    <div class="ui-g-3">
+                        <p:outputLabel value="Contraseña"/>
+                    </div>    
+                    <div class="ui-g-3">                      
+                        <p:password value="#{cusuario.usu.pass}"/>
+                    </div>    
+                    <div class="ui-g-3"></div>    
+                </div>
+                <div class="ui-g">
+                    <div class="ui-g-3"></div>    
+                    <div class="ui-g-3">
+                        <p:outputLabel value="Rol"/>
+                    </div>    
+                    <div class="ui-g-3">
+                        <p:selectOneMenu value="#{CUsuario.rolUsu.id_rolesUsuario}">
+                            <f:selectItems value="#{CRolesUsuario.lista}" var="r"
+                                           itemLabel="#{r.rolUser}"
+                                           itemValue="#{r.id_rolesUsuario}"
+                                           />
+                        </p:selectOneMenu>
+                    </div>    
+                    <div class="ui-g-3"></div>    
+                </div>               
+                <div class="ui-g">
+                    <div class="ui-g-3"></div>
+                    <div class="ui-g-3">
+                        <p:commandButton value="Guardar" actionListener="#{CUsuario.create()}" update=":msj :data" oncomplete="PF('dialogo').hide()"/>
+                    </div>
+                    <div class="ui-g-3">
+                        <p:commandButton value="Limpiar" update="data" process="@this"/>
+                    </div>
+                    <div class="ui-g-3"></div>
+                </div>
+            </h:form>                                      
+        </p:dialog>
+        <!--FIN -->
+        <!--TABLA PARA MOSTRAR TODOS LOS USUARIOS REGISTRADOS-->
+        <h:form id="tbPer">
+            <p:dataTable value="#{CUsuario.lista}" var="us"  >
+                <p:column headerText="ID" width="15">
+                    <h:outputText value="#{us.id_usuario}"/>
+                </p:column>
+                <p:column headerText="Usuario">
+                    <h:outputText value="#{us.nickName}"/>
+                </p:column>
+                <p:column headerText="Contraseña" visible="false">
+                    <h:outputText value="#{ us.pass}"/>
+                </p:column>
+                <p:column headerText="Empleado">
+                    <h:outputText value="#{us.id_persona.nombres} #{us.id_persona.apellidos}"/>
+                </p:column>
+                <p:column headerText="Rol">
+                    <h:outputText value="#{us.id_rolesUsuario.rolUser}"/>
+                </p:column>
+                <p:column headerText="Modificar">                
+                    <p:commandButton value="Modificar" oncomplete="PF('modificar').show()" actionListener="#{CUsuario.find(us)}" update=":msj :modificar"/>
+                </p:column>
+                <p:column headerText="Eliminar">
+                    <p:commandButton value="Eliminar" update=":msj data" actionListener="#{CUsuario.delete(us)}">
+                        <p:confirm header="Confirmar" message="¿Desea eliminar datos?"/>
+                    </p:commandButton>                    
+                </p:column>
+            </p:dataTable>
+            <p:confirmDialog global="true" showEffect="clip" hideEffect="clip">
+                <p:commandButton value="Aceptar" type="button" styleClass="ui-confirmdialog-yes"/>
+                <p:commandButton value="Cancelar" type="button" styleClass="ui-confirmdialog-no"/>
+            </p:confirmDialog>
+        </h:form>
+        <!--FIN -->
+        <!--FORMULARIO PARA MODIFICAR USUARIOS-->
+        <p:dialog modal="true" header="Modificar" widgetVar="modificar" id="modificar" >           
+            <h:form>  
+                <p:panelGrid columns="2">                   
+                    <p:outputLabel value="ID"/>                        
+                    <p:inputText value="#{CUsuario.usu.id_usuario}" readonly="true"/>
+
+                    <p:outputLabel value="Usuario"/>                      
+                    <p:inputText value="#{CUsuario.usu.nickName}"/>
+
+                    <p:outputLabel value="Contraseña"/>                                            
+                    <p:password feedback="true" id="turkishFeedback" value="#{CUsuario.usu.pass}"/>
+
+                    <p:outputLabel value="Rol"/>                       
+                    <p:selectOneMenu value="#{CUsuario.rolUsu.id_rolesUsuario}">
+                        <f:selectItems value="#{CRolesUsuario.lista}" var="r"
+                                       itemLabel="#{r.rolUser}"
+                                       itemValue="#{r.id_rolesUsuario}"/>
+                    </p:selectOneMenu>
+
+                    <div class="ui-g-12 ui-md-4">
+                        <div class="ui-inputgroup">
+                            <p:inputText placeholder="Keyboard" />
+                            <p:commandButton icon="pi pi-search"  styleClass="white-button"/>  
+                        </div>
+                    </div>
+
+                    <p:outputLabel value="Empleado"/>                       
+
+                    <p:selectOneMenu value="#{CUsuario.per.id_persona}">
+                        <f:selectItems value="#{cPersona.lista}" var="p" 
+                                       itemLabel="#{p.nombres} #{p.apellidos}"
+                                       itemValue="#{p.id_persona}"/>
+                        <p:ajax process="@this"/>
+                    </p:selectOneMenu>                                          
+
+                    <p:commandButton value="Buscar" onclick="PF('persona1').show()"/> 
+                    <p:commandButton value="Modificar" actionListener="#{CUsuario.update()}" 
+                                     oncomplete="PF('modificar').hide()"
+                                     update=":msj :data">
+                        <p:confirm header="Confirmar" message="¿Desea modificar datos?"/>
+                    </p:commandButton>                        
+                    <p:commandButton value="Cancelar" update="data" process="@this" oncomplete="PF('modificar').show()"/>                       
+                </p:panelGrid>
+
+            </h:form>                                      
+        </p:dialog>
+        <!--FIN -->
+    </h:body>
+</html>

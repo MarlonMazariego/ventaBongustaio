@@ -1,0 +1,124 @@
+
+    /**
+     * PARA COMENZAR, CREAMOS NUESTRO MÉTODO PERSONALIZADO EN EL FACADE
+     * CORRESPONDIENTE, YA QUE LO QUE BUSCAMOS ES OBTENER EL ID DE LA SUCURLSAL,
+     * UNA FORMA SENCILLA SERIA OBTENER LA PERSONA CORRESPONDIENTE AL USUARIO EN
+     * SESIÓN Y A PARTIR DE AHÍ RECIBIR LA SUCURSAL A LA QUE PERTENECE
+     *
+     * LOS PASOS ESTAN SEÑALADOS MEDIANTE NÚMEROS: PARA COMENZAR CREAMOS NUESTRA
+     * FUNCION, LA CUAL RECIBIRA UN OBJETO DEL TIPO "USUARIO" CREAMOS UNA LISTA
+     * PARA LA ENTIDAD PERSONA, UNA VARIABLE DE TIPO STRING Y UN OBJETO DE LA
+     * ENTIDAD PERSONAS IGUALMENTE.
+     *
+     * 1,Creamos la consulta, para el caso deleccionamos toda la entidad
+     * "Persona" con un alias "p" donde su id es igual a un parametros 2.
+     * Creamos el query usando nuestro Entity Manager 3. Usamos nuestro objeto
+     * "q" del tipo Query para setear el parametro el parametro va a
+     * corresponder al id de la persona que viene de la variable de sesión, el
+     * cual adquirimos como parametro 4. utilizando nuestra lista la igualamos
+     * al resultado del Query.
+     *
+     * 5. Siguiendo usamos una condición que indique si la lista esta o no
+     * vacia, si no lo esta que lance error y si lo esta que recojemos el primer
+     * valor que obtenga, igualando a nuestro objeto del tipo Persona.
+     *
+     * 6. Retornamos nuestro objeto de tipo Persona
+     */
+    @Override
+    public Persona getPersona(Usuario us) {
+        List<Persona> lista = null;
+        String sql = null;
+        Persona per = null;
+        try {
+            /*1*/
+            sql = "SELECT p FROM Persona p WHERE p.id_persona = ?1";
+            /*2*/
+            Query q = em.createQuery(sql);
+
+            /*3*/
+            q.setParameter(1, us.getId_persona().getId_persona());
+
+            /*4*/
+            lista = q.getResultList();
+
+            if (!lista.isEmpty()) {
+                /*5*/
+                per = lista.get(0);
+                System.out.println("LISTA BIEN HECHA :D" + per.getId_sucursal().getId_sucursal());
+            } else {
+                System.err.println("NO SE EJECUTO QUERY PEDIDO FACADE");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("ERROR GRAVE");
+        }
+        /*6**/
+        return per;
+    }
+
+    /**
+     * CON NUESTRA FUNCIÓN LISTA, SOLO LA PASAMOS AL FACADE LOCAL POR EJ:
+     * Persona getPersona(Usuario us);
+     *
+     * LUEGO PROCEDEMOS AL CONTROLADOR:
+     * 
+     * 1. Creamos un objeto de tipo persona y otro de tipo Usuario
+     * 2. Igualamos nuestro objeto Usuario a la sesión en curso
+     * 3. Usamos el objeto de persona para recibir el resultado de nuestra
+     * función anterior, a la cual al mismo tiempo le enviaremos nuestro objeto 
+     * de tipo Usuario igualado anteriormente.
+     * 4. Seteamos en la entidad sucursal el id de sucursal, como la id de sucursal que viene en 
+     * nuestro objeto personas recibido en el paso 3
+     * 5. Igualamos el atributo de Usuario a la variable de sesión
+     * 6. Verificamos si imprime correctamente.
+     * 7. seguimos el proceso habitual
+     * 
+     * NOTA: SI QUIERE QUE MEDIANTE EL USUARIO QUE SELECCIONA DE UNA SELECT SE INCLUYA LA SUCURSAL,
+     * PRIMERO DEBE SELECCIONAR EL USUARIO COMPLETO, YA QUE CON EL SELECT SOLO LE REGRESA UN ID, Y
+     * NUNCA PODRIA IR AL ID DE PERSONA MEDIANTE ESA FORMA
+     * 
+     */
+    public void save() {
+
+        /*1*/
+        Usuario us = null;
+
+        Persona per = null;
+        FacesMessage mensa;
+        try {
+
+            /*2*/
+            us = (Usuario) FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("Usuario");
+
+            /*3*/
+            per = this.pedidoEJB.getPersona(us);
+
+            /*4*/ this.suc.setId_sucursal(per.getId_sucursal().getId_sucursal());
+
+            /*5*/
+            this.usu = us;
+            /*6*/
+            System.out.println(usu.getId_usuario() + "DATOOOOOOO!");
+
+            /*7*/
+            this.ped.setId_proveedor(prov);
+            this.ped.setId_producto(prod);
+            this.ped.setId_usuario(usu);
+            this.ped.setId_sucursal(suc);
+            this.pedidoEJB.create(ped);
+
+            /*1*/
+            init();
+            refresh();
+            msj = "Datos guardados correctamente";
+            mensa = new FacesMessage(FacesMessage.SEVERITY_INFO, "Completado", msj);
+        } catch (Exception e) {
+            msj = "Error al guardar " + e.getMessage();
+            System.out.println("No guarda por " + e.getMessage());
+            mensa = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", msj);
+        }
+        FacesContext.getCurrentInstance().addMessage(msj, mensa);
+    }
+
+/*SI VA A MODIFICAR, SIMPLEMENTE MODIFICAR EL USUARIO, LA SUCURSAL NO SERA MODIFICADA DE NINGUNA MANERA EN EL REGISTRO*/

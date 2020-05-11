@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+    <ui:composition>
+
+        <p:dialog widgetVar="modaltbTmp" header="Tiempo" modal="true" showEffect="slide" resizable="false"
+                  hideEffect="slide" width="90%" height="80%" draggable="false" blockScroll="true">
+            <p:ajax event="close" listener="#{cPlatillo.refresh()}" update=":fPlatillo"/>
+            <p:ajax event="open" listener="#{cTiempo.refresh()}" update=":formtbTmp"/>
+            <h:form id="formtbTmp">
+                <p:fieldset legend="Categoría Principal">
+                    <p:dataTable  var="tt" value="#{cTiempo.lista}" rows="10" id="tbTiempo" rowIndexVar="i"
+                                  paginator="true" emptyMessage="Sin resultados..." rowHover="true"
+                                  paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                  currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                                  rowsPerPageTemplate="5,10,15">
+
+                        <f:facet name="header">
+                            LISTADO DE CATEGORIAS PRINCIPALES
+                        </f:facet>
+                        <f:facet name="paginatorTopRight">
+                            <p:commandButton icon="pi pi-refresh"  action="#{cTiempo.refresh()}" update="tbTiempo  "/>
+                        </f:facet>
+                        <f:facet name="paginatorBottomRight">
+                            <p:commandButton  icon="pi pi-refresh" action="#{cTiempo.refresh()}" update="tbTiempo  "/>
+                        </f:facet>
+                        <p:column headerText="Id" >
+                            <h:outputText value="#{i + 1}"/>
+                        </p:column>
+                        <p:column headerText="Tipo" >
+                            <h:outputText value="#{tt.tipo}"/>
+                        </p:column>     
+                        <p:column headerText="Id tipo sucursal" >
+                            <h:outputText value="#{tt.id_tipoSucursal.nombreSucursal}"/>
+                        </p:column>                                    
+                    </p:dataTable>
+                </p:fieldset>
+            </h:form>
+        </p:dialog>
+    </ui:composition>
+</html>
+

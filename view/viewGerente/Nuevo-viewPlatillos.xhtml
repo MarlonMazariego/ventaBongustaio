@@ -1,0 +1,171 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Menú</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <style>
+            body .ui-toolbar {
+                border: 1px solid transparent;
+                background-color: transparent;
+                color: #fff;
+                padding: .571em 1em .571em 1em;
+            }
+        </style>
+    </h:head>
+    <h:body>
+        <ui:include src="../../../../../WEB-INF/components/navbar.xhtml"/>
+        <p:outputPanel>
+            <p:growl id="msj" showDetail="true"/>
+            <div class="ui-g">
+                <div class="ui-g-4"></div>
+                <div class="ui-g-7">
+                    <!--Para la barra de menú -->
+                    <!--Es funcional para la opción de guardar, lo demás está de forma estética por el momento -->
+                    <h:form>  
+                        <p:toolbar id="tb">
+                            <p:toolbarGroup align="right">
+                                <p:menubar>
+                                    <p:menuitem icon="pi pi-refresh" action="#{cPlatillo.refresh()}" update=":fPlatillo"/>                                                              
+                                    <p:submenu label="Ingredientes utilizados" icon="pi pi-question">
+                                        <p:menuitem value="Ingredientes por platillo" icon="pi pi-pencil"
+                                                    oncomplete="PF('modalDetPla').show();"/>
+                                    </p:submenu> 
+                                    <p:submenu label="Otros" icon="pi pi-cog">
+                                        <p:menuitem value="Sub-Categorías"  icon="pi pi-angle-double-left" 
+                                                    oncomplete="PF('modaltbScaPla').show();"/>
+                                        <p:menuitem value="Clasificación Principal" icon="pi pi-angle-double-right"
+                                                    oncomplete="PF('modaltbTmp').show();"/>
+                                    </p:submenu>
+                                </p:menubar>
+                            </p:toolbarGroup>
+                        </p:toolbar>
+                        <p:sticky target="tb" />
+                    </h:form>
+                </div>
+                <div class="ui-g-1"></div>
+            </div>
+
+            <div class="ui-g">
+                <div class="ui-g-12">
+                    <p:fieldset legend="Menú" id="field">
+                        <h:form id="fPlatillo">
+                            <p:dataTable var="lis" value="#{cPlatillo.lista}" rows="10" id="data" 
+                                         paginator="true" emptyMessage="Sin resultados" rowHover="true"
+                                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                         currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                                         rowsPerPageTemplate="5,10,15" rowIndexVar="i" widgetVar="tbPlatillo">
+                                <f:facet name="header">
+                                    Platillos disponibles
+                                    <f:facet name="footer">                           
+                                        <h:commandLink title="Exportar Excel">
+                                            <img src="../../../../../../resources/img/excel.png" />
+                                            <p:dataExporter type="xls" target="#{lis.id_platillo}" fileName="ViewPlatillos" />
+                                        </h:commandLink>
+                                        <h:commandLink title="Exportar  en PDF">
+                                            <img src="../../../../../../resources/img/pdf.png" /> 
+                                            <p:dataExporter type="pdf" target="#{lis.id_platillo}" fileName="ViewPlatillos"/>
+                                        </h:commandLink>
+                                        <h:commandLink title="Exportar en CSV">
+                                            <img src="../../../../../../resources/img/csv.png" /> 
+                                            <p:dataExporter type="csv" target="#{lis.id_platillo}" fileName="ViewPlatillos" />
+                                        </h:commandLink>
+                                        <h:commandLink title="Exportar en XML">
+                                            <img src="../../../../../../resources/img/xml.png" /> 
+                                            <p:dataExporter type="xml" target="#{lis.id_platillo}" fileName="ViewPlatillos" />
+                                        </h:commandLink>
+
+                                    </f:facet>
+                                </f:facet>
+                                <f:facet name="paginatorTopRight">
+                                    <p:commandButton icon="pi pi-refresh" action="#{cPlatillo.refresh()}" update="fPlatillo"/>
+                                </f:facet>
+                                <f:facet name="paginatorBottomRight">
+                                    <p:commandButton icon="pi pi-refresh" action="#{cPlatillo.refresh()}" update="fPlatillo"/>
+                                </f:facet>
+                                <p:column headerText="Id" footerText="Id" filterBy="#{lis.id_platillo}"
+                                          filterMatchMode="contains">
+                                    <h:outputText value="#{i + 1}"/>
+                                </p:column>
+                                <p:column headerText="Platillo" footerText="Platillo"
+                                          filterBy="#{lis.nombrePlatillo}" filterMatchMode="contains">
+                                    <h:outputText value="#{lis.nombrePlatillo}"/>
+                                </p:column>
+                                <p:column headerText="Precio" footerText="Precio" filterBy="#{lis.precioPlatillo}"
+                                          filterMatchMode="contains">
+                                    <h:outputText value="#{lis.precioPlatillo}"/>
+                                </p:column>
+                                <p:column headerText="Costo" footerText="Costo">
+                                    <h:outputText value="#{lis.costoPlatillo}"/>
+                                </p:column>
+                                <p:column headerText="Categoría" footerText="Sub categoría"
+                                          filterBy="#{lis.id_subCategoria.tipo}" filterMatchMode="startsWith">
+                                    <h:outputText value="#{lis.id_subCategoria.tipo}"/>
+                                </p:column>  
+                                <p:column headerText="Ver" footerText="Ver" style="text-align: center">
+                                    <p:commandButton icon='pi pi-search' action="#{cPlatillo.view(lis)}"
+                                                     oncomplete="PF('viewID').show();" update=":formView"/>
+                                </p:column>                         
+                            </p:dataTable>
+                        </h:form>
+                    </p:fieldset>
+                </div>
+            </div>
+
+            <!--detalle-->
+            <h:form id="formPla"/>
+
+            <!--VER INFORMACIÓN COMPLETA DEK PLATILLO-->
+            <h:form id="formView">
+                <p:dialog header="Información " widgetVar="viewID" modal="true" resizable="false" 
+                          showEffect="slide" hideEffect="slide" id="viewModal" blockScroll="true"
+                          closeOnEscape="true" width="80%" height="80%">
+                    <p:ajax event="close" listener="#{cPlatillo.clear()}" update=":formPla"/>
+                    <p:panelGrid columns="2" style="width: 100%">
+                        <f:facet name='header'>
+                            Datos
+                        </f:facet>
+                        <p:outputLabel value="ID" rendered="#{cPlatillo.pla.id_platillo != 0}"/>
+                        <p:outputLabel value="#{cPlatillo.pla.id_platillo}" 
+                                       rendered="#{cPlatillo.pla.id_platillo != 0}"/>
+                        <p:outputLabel value="Nombre del platillo"/>
+                        <p:outputLabel value="#{cPlatillo.pla.nombrePlatillo}"/>
+                        <p:outputLabel value="Costo">
+                            <span style="color: gray;">NOTA: precio = costo + 25%</span>
+                        </p:outputLabel>                        
+                        <p:outputLabel value="#{cPlatillo.pla.costoPlatillo}" />
+                        <p:outputLabel value="Precio del platillo"/>                        
+                        <p:outputLabel value="#{cPlatillo.pla.precioPlatillo}"/>
+                        <p:outputLabel value="Categoría"/>
+                        <p:outputLabel value='#{cPlatillo.pla.id_subCategoria.tipo}'/>                        
+                    </p:panelGrid>
+                    <p:separator/>
+                    <p:dataTable var="vi" value="#{cPlatillo.listaDetPla}" rows="10" id="data" 
+                                 paginator="true"
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                                 rowsPerPageTemplate="5,10,15,20" rowIndexVar="i" widgetVar="tbPlatillo">
+                        <f:facet name="header">
+                            Ingredientes utilizados
+                        </f:facet>
+                        <p:column headerText="" footerText="">
+                            <h:outputText value="#{vi.id_producto.nombre_producto}"/>
+                        </p:column>                        
+                    </p:dataTable>
+                </p:dialog>
+            </h:form>
+
+            <!--TABLA DE DETALLE PLATILLO-->
+            <ui:include src="../../../components/viewDetallePlatillo.xhtml"/>
+
+            <!--CLASIFICACIONES-->
+            <ui:include src="../../../components/viewTiempo.xhtml"/>
+            <ui:include src="../../../components/viewScaPlatillo.xhtml"/>
+        </p:outputPanel>
+    </h:body>
+</html>
+

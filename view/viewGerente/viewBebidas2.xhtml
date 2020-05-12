@@ -1,0 +1,185 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Bebidas</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <style>
+            body .ui-toolbar {
+                border: 1px solid transparent;
+                background-color: transparent;
+                color: #fff;
+                padding: .571em 1em .571em 1em;
+            }
+        </style>
+    </h:head>
+    <h:body>
+        <ui:include src="../../../WEB-INF/components/navbar.xhtml"/>
+      
+        <p:growl id="msj" showDetail="true"/>
+        <p:outputPanel>           
+            <div class="ui-g">
+                <div class="ui-g-6"></div>
+                <div class="ui-g-4">                   
+                    <h:form>
+                        <p:toolbar id="tb">
+                            <p:toolbarGroup align="right">
+                                <p:menubar>
+                                    <p:menuitem icon='pi pi-refresh' action="#{cBebidas.refresh()}" 
+                                                update=":fBebida"/>
+                                    <p:submenu label="Tipos de bebida" icon="pi pi-file">                    
+                                        <p:menuitem value="Ver Tipos" oncomplete="PF('modal-tabla-tipo').show()" icon="pi pi-plus"/>
+                                    </p:submenu>
+                                    <p:submenu label="Bebidas" icon="pi pi-pencil">                                       
+                                    </p:submenu>                                   
+                                </p:menubar>
+                            </p:toolbarGroup>
+                        </p:toolbar>
+                        <p:sticky target="tb" />
+                    </h:form>    
+                </div>
+                <div class="ui-g-2"></div>
+            </div>
+            <!--TIPO DE BEBIDAS-->
+            <ui:include src="../../AdminSU/components/viewTipoB2.xhtml"/>
+            <a href=""></a>
+            <div class="ui-g">
+                <div class="ui-g-4">
+                    <h:form>
+                        <p:fieldset legend="Referencias" toggleable="false"
+                                    style="background-color: black;">
+                            <p:contentFlow value="#{cimg.images}" var="image" style="width: 100%">
+                                <img  src="../../../resources/img/bebidas/#{image}" 
+                                  
+                                      class="content"/>
+                                <div class="caption">#{image}</div>
+                            </p:contentFlow>  
+                        </p:fieldset>
+                    </h:form>
+                </div>
+                <div class="ui-g-8">
+                    <p:fieldset legend="Bongustaio: Nuestras bebidas">
+                        <h:form id="fBebida">
+                            <p:dataTable  var="bb" value="#{cBebidas.lista}" rows="10" id="data"
+                                          paginator="true"
+                                          paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                          currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                                          rowsPerPageTemplate="5,10,15" rowIndexVar="i" widgetVar="tbBebida">
+                                <f:facet name="header">
+                                    Bebidas disponibles
+                                </f:facet>
+                                <f:facet name="paginatorTopLeft">
+                                    <p:commandButton icon="pi pi-refresh" action="#{cBebidas.refresh()}" update="fBebida"/>
+                                </f:facet>
+                                <f:facet name="paginatorBottomLeft">
+                                    <p:commandButton icon="pi pi-refresh" action="#{cBebidas.refresh()}" update="fBebida"/>
+                                </f:facet>
+                                <p:column headerText="Id" footerText="Id" filterBy="#{bb.id_bebida}"
+                                          filterMatchMode="contains">
+                                    <h:outputText value="#{i + 1}"/>
+                                </p:column>
+                                <p:column headerText="Nombre de bebidas" footerText="Nombre de bebidas"
+                                          filterMatchMode="contains"
+                                          filterBy="#{bb.nombre_bebida}">
+                                    <h:outputText value="#{bb.nombre_bebida}"/>
+                                </p:column>
+                                <p:column headerText="Tipo bebidas" footerText="Tipo bebidas"
+                                          filterMatchMode="contains"
+                                          filterBy="#{bb.id_tipoBebida.tipo}">
+                                    <h:outputText value="#{bb.id_tipoBebida.tipo}"/>
+                                </p:column>
+                                <p:column headerText="Precio bebidas" footerText="Precio bebidas"
+                                          filterMatchMode="contains"
+                                          filterBy="#{bb.precio_bebida}">
+                                    <h:outputText value="#{bb.precio_bebida}">
+                                        <f:convertNumber type="currency" currencySymbol="$"/>
+                                    </h:outputText>
+                                </p:column>
+                                <p:column headerText="Identificador del producto" footerText="Producto"
+                                          filterMatchMode="contains"
+                                          filterBy="#{bb.id_referencia}">
+                                    <h:outputText value="#{bb.id_referencia}"/>
+                                </p:column>
+                             
+                            </p:dataTable>
+
+                        </h:form>
+                    </p:fieldset>
+                </div>
+
+                <!--Modal para guardar -->
+                <h:form id="formulario">
+                    <p:dialog header="Datos de la bebida" widgetVar="modal-bebida" modal="true" resizable="false" 
+                              showEffect="slide" hideEffect="slide">   
+                        <p:ajax event="close" listener="#{cBebidas.init()}" update=":formulario"/>
+                        <p:panelGrid columns="2">
+                            <p:outputLabel value="Ingrese el nombre de bebida"/>
+                            <p:inputText value="#{cBebidas.bebida.nombre_bebida}"/>
+                            <p:outputLabel value="Tipo de bebidas"/>
+                            <p:selectOneMenu value="#{cBebidas.tipoBebida.id_tipoBebida}"
+                                             style="width: 100%">
+                                <f:selectItems var="bebida" value="#{cTipoBebida.lista}" itemLabel="#{bebida.tipo}" itemValue="#{bebida.id_tipoBebida}"/>
+                            </p:selectOneMenu>
+                            <p:outputLabel value="Precio"/>
+                            <p:inputNumber value="#{cBebidas.bebida.precio_bebida}" decimalPlaces="2" 
+                                           minValue="0.00"/>
+                            <p:outputLabel value="Referencia al producto N° "/>
+                            <p:inputNumber value="#{cBebidas.bebida.id_referencia}"
+                                           decimalPlaces="0"/>
+                            <p:commandButton value="Guardar" actionListener="#{cBebidas.create()}"  
+                                             update=":fBebida:data :msj"
+                                             oncomplete="PF('modal-bebida').hide();">
+                                <p:confirm header="Confirmation" message="¿Desea guardar el registro?" icon="pi pi-exclamation-triangle" />
+                            </p:commandButton>
+                            <p:commandButton value="Cancelar" oncomplete="PF('modal-bebida').hide();" />
+                        </p:panelGrid>
+                    </p:dialog>
+                </h:form>
+
+                <!--Modal para modificar -->
+                <h:form id="beb_datos">
+                    <p:dialog header="Bebidas" widgetVar="beb"  modal="true" resizable="false" 
+                              showEffect="slide" hideEffect="slide" id="beb"> 
+                        <p:ajax event="close" listener="#{cBebidas.init()}" update="beb"/>
+                        <p:panelGrid columns="2">
+                            <p:outputLabel value="Id"/>
+                            <p:inputText value="#{cBebidas.bebida.id_bebida}" disabled="true"/>
+                            <p:outputLabel value="Ingrese el nombre de bebida"/>
+                            <p:inputText value="#{cBebidas.bebida.nombre_bebida}"/>
+                            <p:outputLabel value="Tipo de bebidas"/>
+                            <p:selectOneMenu value="#{cBebidas.tipoBebida.id_tipoBebida}"
+                                             style="width: 100%">
+                                <f:selectItems var="bebida" value="#{cTipoBebida.lista}" 
+                                               itemLabel="#{bebida.tipo}" itemValue="#{bebida.id_tipoBebida}"/>
+                            </p:selectOneMenu>
+                            <p:outputLabel value="Precio bebida"/>
+                            <p:inputNumber value="#{cBebidas.bebida.precio_bebida}" decimalPlaces="2" minValue="0.00"/> 
+                            <p:outputLabel value="Referencia al producto N° "/>
+                            <p:outputLabel value="#{cBebidas.bebida.id_referencia}"/>
+                            <p:commandButton value="Modificar" actionListener="#{cBebidas.update()}" oncomplete="PF('beb').hide();" update=" :fBebida:data :msj">
+                                <p:confirm header="Confirmation" message="¿Desea realizar cambios?" 
+                                           icon="pi pi-exclamation-triangle" />
+                            </p:commandButton>
+                            <p:commandButton value="Cancelar" oncomplete="PF('beb').hide();" />
+                        </p:panelGrid>   
+
+                    </p:dialog>
+                </h:form>
+                <div class="ui-g-1"></div>
+            </div>
+        </p:outputPanel>
+
+        <h:form>
+            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="pi pi-times" />
+            </p:confirmDialog>  
+        </h:form>
+
+    </h:body>
+</html>
+

@@ -1,0 +1,160 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Complementos</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <style>
+            body .ui-toolbar {
+                border: 1px solid transparent;
+                background-color: transparent;
+                color: #fff;
+                padding: .571em 1em .571em 1em;
+            }
+        </style>
+    </h:head>
+    <h:body>
+        <ui:include src="../../../WEB-INF/components/navbar.xhtml"/>
+        <p:outputPanel>
+            <p:growl id="msj" showDetail="true" showSummary="true" />
+            <div class='ui-g'>
+                <div clasS='ui-g-10'>
+                    <h:form>  
+                        <p:toolbar id="nuevo">
+                            <p:toolbarGroup align="right">
+                                <p:menubar>
+                                    <p:menuitem icon='pi pi-refresh' action="#{cComplemento.findAll()}" update=":data "/>
+                                    <p:submenu label="Tipos" icon="pi pi-file">
+                                        <p:menuitem value='Listado' oncomplete="PF('tiCoModal').show();"
+                                                    icon='pi pi-pencil'/>
+                                    </p:submenu>                         
+                                </p:menubar>
+                            </p:toolbarGroup>
+                        </p:toolbar>
+                        <p:sticky target="nuevo" />
+                    </h:form>
+
+                </div>
+                <div clasS='ui-g-2'></div>
+            </div>
+
+            <div clasS='ui-g'>
+                <div class='ui-g-12'>
+                    <h:form id="data">
+                        <p:fieldset legend="Complementos">
+                            <p:dataTable  var="cp" value="#{cComplemento.lista}" rows="10" id="tbCom" 
+                                          rowIndexVar="i" paginator="true" rowsPerPageTemplate="5,10,15"
+                                          paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                          currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records">
+                                <f:facet name="paginatorTopRight">
+                                    <p:commandButton icon="pi pi-refresh"  
+                                                     action="#{cComplemento.findAll()}" 
+                                                     update="tbCom  :msj"/>
+                                </f:facet>
+                                <f:facet name="paginatorBottomRight">
+                                    <p:commandButton  icon="pi pi-refresh" 
+                                                      action="#{cComplemento.findAll()}" 
+                                                      update="tbCom  :msj"/>
+                                </f:facet>
+                                <f:facet name="header">
+                                    Informacion de complementos
+                                </f:facet>
+                                <p:column headerText="ID" footerText="ID"
+                                          filterBy='#{cp.id_complemento}' 
+                                          filterMatchMode="contains">
+                                    <h:outputText value="#{i + 1}"/>
+                                </p:column>
+                                <p:column headerText="Nombre de complemento" 
+                                          filterBy='#{cp.nombre_complemento}' 
+                                          filterMatchMode="contains">
+                                    <h:outputText value="#{cp.nombre_complemento}"/>
+                                </p:column>     
+                                <p:column headerText="Categoria" 
+                                          filterBy='#{cp.id_tipoCom.nombre}' 
+                                          filterMatchMode="contains">
+                                    <h:outputText value="#{cp.id_tipoCom.nombre}"/>
+                                </p:column>
+                                <p:column headerText="Precio" 
+                                          filterBy='#{cp.precio_complemento}' 
+                                          filterMatchMode="contains">
+                                    <h:outputText value="#{cp.precio_complemento}"/>
+                                </p:column>
+                                <p:column headerText="Identificador del producto" footerText="Producto"
+                                          filterBy='#{cp.id_referencia}' style="text-align: center"
+                                          filterMatchMode="contains">
+                                    <h:outputText value='#{cp.id_referencia}'/>
+                                </p:column>
+                            </p:dataTable>
+                        </p:fieldset>
+                    </h:form>
+                </div>
+            </div>
+
+
+            <!--MODAL PARA GUARDAR Y MODIFICAR REGISTROS-->
+            <h:form id="formNvoC">
+                <p:dialog header="Datos" widgetVar="modalCom" id="modalCom" hideEffect="slide" 
+                          showEffect="slide" modal="true"  closeOnEscape="true">
+                    <p:ajax event='close' listener='#{cComplemento.clean()}' update='modalCom'/>
+                    <p:panelGrid columns="2">
+                        <p:outputLabel value="Id" rendered='#{cComplemento.com.id_complemento !=0}'/>
+                        <p:outputLabel value="#{cComplemento.com.id_complemento}"
+                                       rendered='#{cComplemento.com.id_complemento !=0}'/>
+                        <p:outputLabel value="Nombre de complemento" for='@next'/>
+                        <p:inputText value="#{cComplemento.com.nombre_complemento}" placeholder="Nombre de complemento"/>
+                        <p:outputLabel value="Tipo de Complemento" for='@next'/>
+                        <p:selectOneMenu value="#{cComplemento.tipCom.id_tipoCom}"
+                                         style='width:100%;'>
+                            <f:selectItems value="#{cTipoComplemento.lista}" var="tcc"
+                                           itemValue="#{tcc.id_tipoCom}"
+                                           itemLabel="#{tcc.nombre}"/>                   
+                        </p:selectOneMenu>
+                        <p:outputLabel value="Precio complemento" for='@next'/>
+                        <p:inputNumber value="#{cComplemento.com.precio_complemento}" 
+                                       placeholder="Precio de complemento" decimalPlaces="2"/>
+                        <p:outputLabel value='Referencia al producto N° ' for='@next'/>                        
+                        <p:inputNumber value='#{cComplemento.com.id_referencia}' decimalPlaces="0"
+                                       rendered='#{cComplemento.com.id_complemento == 0}'/>
+                        <p:outputLabel value='#{cComplemento.com.id_referencia}'
+                                       rendered='#{cComplemento.com.id_complemento !=0}'/>
+                        <p:commandButton value="Guardar" actionListener="#{cComplemento.save()}" 
+                                         oncomplete="PF('modalCom').hide();" update=":data :msj"
+                                         rendered='#{cComplemento.com.id_complemento == 0}'>
+                            <p:confirm  header="Confirmacion" 
+                                        message="¿Desea guardar un nuevo registro?" 
+                                        icon="pi pi-exclamation-triangle"/>
+                        </p:commandButton>
+                        <p:commandButton value="Modificar" actionListener="#{cComplemento.update()}" 
+                                         oncomplete="PF('modalCom').hide();" update=":data :msj"
+                                         rendered='#{cComplemento.com.id_complemento !=0}'>
+                            <p:confirm  header="Confirmacion" message="¿Seguro que desea modificar ?" 
+                                        icon="pi pi-exclamation-triangle"/>
+                        </p:commandButton>
+                        <p:commandButton value="Cancelar" oncomplete="PF('modalCom').hide();" update=":data"/>
+                    </p:panelGrid>
+
+                </p:dialog>
+            </h:form>
+
+            <!--DIALOGO DE CONFIRMACIÓN-->
+            <h:form>
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                    <p:column>
+                        <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check"/>
+                    </p:column>
+                    <p:column>
+                        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no"  icon="pi pi-times"/>
+                    </p:column>
+                </p:confirmDialog>
+            </h:form>
+
+            <!--INCLUIMOS LA TABLA DE TIPOS-->
+            <ui:include src='../../AdminSU/components/viewTipoComplemento2.xhtml'/>
+        </p:outputPanel>
+    </h:body>
+</html>
+

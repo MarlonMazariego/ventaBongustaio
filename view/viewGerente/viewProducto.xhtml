@@ -1,0 +1,173 @@
+
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Pedidos</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <style>
+            body .ui-toolbar {
+                border: 1px solid transparent;
+                background-color: transparent;
+                color: #fff;
+                padding: .571em 1em .571em 1em;
+            }
+        </style>
+    </h:head>
+    <h:body>
+        <ui:include src="../../../../WEB-INF/components/navbar.xhtml"/>
+        <p:outputPanel>
+            <p:growl id="msj" showDetail="true"/>
+            <div class="ui-g">
+                <div class="ui-g-5"></div>
+                <div class="ui-g-5"> 
+                    <!--Para la barra de menú -->
+                    <!--Es funcional para la opción de guardar, lo demás está de forma estética por el momento -->
+                    <h:form>  
+                        <p:toolbar id="tb">
+                            <p:toolbarGroup align="right">
+                                <p:menubar>
+                                    <p:menuitem icon="pi pi-refresh" action="#{cProducto.clear()}" update=":fProducto"/>
+                                    <p:submenu label="Inhabilitada" icon="pi pi-pencil">
+                                        <p:menuitem value="Por id" url="#" icon="pi pi-angle-double-left" />
+                                    </p:submenu>
+                                    <p:submenu label="Inhabilitada" icon="pi pi-question">
+                                        <p:menuitem value="Contents" url="#" />
+                                        <p:submenu label="Search" icon="pi pi-search">
+                                            <p:submenu label="Text">
+                                                <p:menuitem value="Workspace" url="#" />
+                                            </p:submenu>
+                                            <p:menuitem value="File" url="#" />
+                                        </p:submenu>
+                                    </p:submenu>                                                                      
+                                </p:menubar>
+                            </p:toolbarGroup>
+                        </p:toolbar>
+                        <p:sticky target="tb" />
+                    </h:form>
+                </div>
+                <div class="ui-g-2"></div>
+            </div>
+            <div class="ui-g">
+                <div class="ui-g-12"> 
+                    <p:fieldset legend="Inventario" id="fields">
+                        <h:form id="fProducto">
+                            <p:dataTable var="lis" value="#{cProducto.lista}" rows="10" id="data" 
+                                         paginator="true" emptyMessage="Sin resultados..."
+                                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                         currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                                         rowsPerPageTemplate="5,10,15" rowIndexVar="i" widgetVar="tbProducto">
+
+                                <f:facet name="header">
+                                    Productos
+                                </f:facet>
+                                <f:facet name="paginatorTopLeft">
+                                    <p:commandButton icon="pi pi-refresh" action="#{cProducto.clear()}" update=" fProducto"/>
+                                </f:facet>
+                                <f:facet name="paginatorBottomLeft">
+                                    <p:commandButton icon="pi pi-refresh" action="#{cProducto.clear()}" update=" fProducto"/>
+                                </f:facet>
+                                <p:column headerText="Id" footerText="Id" filterBy="#{lis.id_producto}"
+                                          filterMatchMode="startsWith">
+                                    <h:outputText value="#{i + 1}"/>
+                                </p:column>
+                                <p:column headerText="Producto" footerText="Nombre del producto"
+                                          filterBy="#{lis.nombre_producto}" filterMatchMode="startsWith">
+                                    <h:outputText value="#{lis.nombre_producto}"/>
+                                </p:column>                              
+                                <p:column headerText="Costo Unidad" footerText="Costo unidad"
+                                          style="text-align: center">
+                                    <h:outputText value="$ #{lis.costo_unitario}"/>
+                                </p:column>
+                                <p:column headerText="Estado" footerText="Estado" filterBy="#{lis.estado}"
+                                          filterMatchMode="startsWith">
+                                    <h:outputText value="#{lis.estado}"/>
+                                </p:column>
+                                <p:column headerText="Tipo" footerText="Tipo" style="text-align: center"
+                                          filterBy="#{lis.tipo}" filterMatchMode="startsWith">
+                                    <p:selectOneMenu value="#{lis.tipo}" disabled="true">
+                                        <f:selectItem itemLabel="Alimento" itemValue="A" />
+                                        <f:selectItem itemLabel="Bebidas" itemValue="B" />
+                                        <f:selectItem itemLabel="Complementos" itemValue="C" />
+                                        <f:selectItem itemLabel="Papeleria y útiles" itemValue="D"/>
+                                        <f:selectItem itemLabel="Insumos de limpieza" itemValue="E"/>
+                                        <f:selectItem itemLabel="Otros " itemValue="F"/>
+                                    </p:selectOneMenu> 
+                                </p:column>
+                                <p:column headerText="Ver" footerText="Ver" style="text-align: center;">
+                                    <p:commandButton icon="pi pi-search" action="#{cProducto.find(lis)}"  
+                                                     update=":formViewPro " oncomplete="PF('viewModal').show();"/>
+                                </p:column> 
+                                    <f:facet name="footer">                           
+                    <h:commandLink title="Exportar Excel">
+                        <img src="../../../../resources/img/excel.png" />
+                        <p:dataExporter type="xls" target="#{lis.id_producto}" fileName="ViewProducto" />
+                    </h:commandLink>
+                    <h:commandLink title="Exportar  en PDF">
+                        <img src="../../../../resources/img/pdf.png" /> 
+                        <p:dataExporter type="pdf" target="#{lis.id_producto}" fileName="ViewProducto"/>
+                    </h:commandLink>
+                    <h:commandLink title="Exportar en CSV">
+                        <img src="../../../../resources/img/csv.png" /> 
+                        <p:dataExporter type="csv" target="#{lis.id_producto}" fileName="ViewProducto" />
+                    </h:commandLink>
+                    <h:commandLink title="Exportar en XML">
+                        <img src="../../../../resources/img/xml.png" /> 
+                        <p:dataExporter type="xml" target="#{lis.id_producto}" fileName="ViewProducto" />
+                    </h:commandLink>
+                </f:facet>
+                            </p:dataTable>
+                            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                                <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+                                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="pi pi-times" />
+                            </p:confirmDialog> 
+                        </h:form>
+                    </p:fieldset> 
+                </div>
+            </div>
+            <!--VER DETALLES DEL REGISTRO-->
+            <h:form id="formViewPro">
+                <p:dialog header="Detalles del producto" widgetVar="viewModal" modal="true" resizable="false" showEffect="slide"
+                          closable="true" closeOnEscape="true" hideEffect="slide">
+                    <p:ajax event="close" listener="#{cProducto.clear()}" update=":formViewPro"/>
+                    <p:panelGrid columns="2">
+                        <p:outputLabel value="Id" rendered="#{cProducto.pro.id_producto != 0}"/>
+                        <p:outputLabel value="#{cProducto.pro.id_producto}"
+                                       rendered="#{cProducto.pro.id_producto != 0}"/>
+                        <p:outputLabel value="Nombre del producto"/>
+                        <p:outputLabel value="#{cProducto.pro.nombre_producto}" />
+                        <p:outputLabel value="Descripción"/>
+                        <p:outputLabel value="#{cProducto.pro.descripcion}" />
+                        <p:outputLabel value="Unidad de medida"/>
+                        <p:outputLabel value="#{cProducto.pro.unidad_medida}" />
+                        <p:outputLabel value="Stock mínimo"/>
+                        <p:outputLabel value="#{cProducto.pro.stock_min}" />
+                        <p:outputLabel value="Existencia inicial"/>
+                        <p:outputLabel value="#{cProducto.pro.existencias}"/>
+                        <p:outputLabel value="Stock máximo"/>
+                        <p:outputLabel value="#{cProducto.pro.stock_max}" />
+                        <p:outputLabel value="Costo unitario"/>
+                        <p:outputLabel value="#{cProducto.pro.costo_unitario}" />
+                        <p:outputLabel value="Estado"/>
+                        <p:outputLabel value="#{cProducto.pro.estado}"/>
+                        <p:outputLabel value="Tipo" for="@next"/>
+                        <p:selectOneMenu value="#{cProducto.pro.tipo}" disabled="true">
+                            <f:selectItem itemLabel="Alimento" itemValue="A" />
+                            <f:selectItem itemLabel="Bebidas" itemValue="B" />
+                            <f:selectItem itemLabel="Complementos" itemValue="C" />
+                            <f:selectItem itemLabel="Papeleria y útiles" itemValue="D"/>
+                            <f:selectItem itemLabel="Insumos de limpieza" itemValue="E"/>
+                            <f:selectItem itemLabel="Otros " itemValue="F"/>
+                        </p:selectOneMenu>                           
+                        <p:commandButton value="Cancelar" oncomplete="PF('viewModal').hide();"/>
+                    </p:panelGrid>
+                </p:dialog>  
+            </h:form>
+        </p:outputPanel>
+    </h:body>
+</html>
+

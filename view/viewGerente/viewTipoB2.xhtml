@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+
+    <br/>
+
+    <ui:composition>
+        <!--MODAL PARA GUARDAR REGISTRO-->
+        <p:dialog widgetVar="modal-tipo" modal="true" header="Tipos de bebidas" id="modal-tipo"
+                  hideEffect="slide" showEffect="slide">
+            <p:ajax listener="#{cTipoBebida.clear()}" update=":form-tipo modal-tipo" event="close"/>
+            <h:form id="form-tipo">
+                <p:panelGrid columns="2">
+                    <p:outputLabel value="Tipo"/>
+                    <p:inputText value="#{cTipoBebida.tipBeb.tipo}" required="true"/>
+                    <p:commandButton value="Guardar" actionListener="#{cTipoBebida.save()}" 
+                                     update=":form-tipo :tabla-tipo :formulario :msj :beb_datos" 
+                                     oncomplete="PF('modal-tipo').hide()"/>
+                    <p:commandButton value="Cancelar" oncomplete="PF('modal-tipo').hide();"/>
+                </p:panelGrid>
+            </h:form>
+        </p:dialog>
+
+        <!--TABNLA DE DATOS-->
+        <p:dialog widgetVar="modal-tabla-tipo" modal="true" hideEffect="slide" showEffect="slide" 
+                  resizable="false" closable="true" closeOnEscape="true">
+            <p:fieldset legend="Tipos disponibles">
+                <h:form id="tabla-tipo">
+                    <p:dataTable  var="lis" value="#{cTipoBebida.lista}" rows="10" id="tbTipoBebida"
+                                  paginator="true"
+                                  paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                  currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                                  rowsPerPageTemplate="5,10,15" rowIndexVar="i" widgetVar="tbTipoBebida">
+                        <f:facet name="header">
+                            Tipos de bebidas
+                        </f:facet>
+                        <f:facet name="paginatorTopRight">
+                            <p:commandButton icon="pi pi-refresh" action="#{cTipoBebida.refresh()}" 
+                                             update="tbTipoBebida"/>
+                        </f:facet>
+                        <f:facet name="paginatorBottomRight">
+                            <p:commandButton icon="pi pi-refresh" action="#{cTipoBebida.refresh()}" 
+                                             update="tbTipoBebida"/>
+                        </f:facet>
+                        <p:column headerText="Id" footerText="Id" filterBy="#{lis.id_tipoBebida}"
+                                  filterMatchMode="contains">
+                            <h:outputText value="#{i + 1}"/>
+                        </p:column>
+                        <p:column headerText="Tipo de bebida" footerText="Tipo de bebida"
+                                  filterMatchMode="contains" filterBy="#{lis.tipo}">
+                            <h:outputText value="#{lis.tipo}"/>
+                        </p:column>
+                   
+                    </p:dataTable>
+                    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                        <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check" />
+                        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="pi pi-times" />
+                    </p:confirmDialog>
+                </h:form>
+            </p:fieldset>
+        </p:dialog>
+
+        <!--MODAL DE MODIFICACIÓN-->
+        <p:dialog header="Tipo de bebida" widgetVar="tb" id="tb_datos" hideEffect="slide" showEffect="slide"
+                  resizable="false" closable="true" closeOnEscape="true">
+            <p:ajax event="close" listener="#{cBebidas.init()}" update="tb_datos"/>
+            <h:form>
+                <p:panelGrid columns="2">
+                    <p:outputLabel value="Id"/>
+                    <p:inputText value="#{cTipoBebida.tipBeb.id_tipoBebida}" disabled="true"/>
+                    <p:outputLabel value="Tipo"/>
+                    <p:inputText value="#{cTipoBebida.tipBeb.tipo}" required="true"/>
+                    <p:commandButton value="Cancelar" oncomplete="PF('tb').hide();"/>
+                </p:panelGrid>
+            </h:form>
+        </p:dialog>
+    </ui:composition>
+</html>
+

@@ -17,9 +17,11 @@
             <p:toolbar id="tb">
                 <p:toolbarGroup align="right">
                     <p:menubar>
-                        <p:submenu label="Listado de persona" icon="pi pi-file">
-                            <p:menuitem value="Ver informacion de persona" oncomplete="PF('modal-tabla-tipo').show()" icon="pi pi-plus"/>
+                        <p:submenu label="Tipos de cargos " icon="pi pi-file">
+                            
+                            <p:menuitem value="Ver listado cargos" oncomplete="PF('modal-tabla-tipo').show()" icon="pi pi-plus"/>
                         </p:submenu>
+                        
                         <p:submenu label="Help" icon="pi pi-question">
                             <p:menuitem value="Contents" url="#" />
                             <p:submenu label="Search" icon="pi pi-search">
@@ -31,27 +33,29 @@
                         </p:submenu>
                         <p:submenu label="Acciones" icon="pi pi-cog">
                             <p:menuitem value="Acción 1" url="#" icon="pi pi-angle-double-left" />
+                            <p:menuitem value="Acción 2" url="#" icon="pi pi-angle-double-left" />
                         </p:submenu>
                         <p:menuitem value="Salir" icon="pi pi-times"/>
 
-                      
+                        <f:facet name="options">
+                            <p:inputText style="margin:1px 10px 1px 1px;" placeholder="Buscar"/>
+                            <p:commandButton type="button" value="Cerrar sesión" icon="pi pi-home" />
+                        </f:facet>
                     </p:menubar>
                 </p:toolbarGroup>
             </p:toolbar>
             <p:sticky target="tb" />
         </h:form>    
 
-        
- 
+       
+        <ui:include src="ViewCargo.xhtml" />
         
         
         <!--Para mostrar los datos de la tabla  -->
         <div class="ui-g-1"></div>
         <div class="ui-g-12">
-            <p:dialog widgetVar="modal-tabla-tipo">
             <p:fieldset legend="Nuestras personal">
                 <h:form id="fS">
-                    <p:scrollPanel mode="native" style="width:1000px;height:400px">
                     <p:dataTable  var="p" value="#{CPersona.lista}" rows="10" id="data"
                                   paginator="true"
                                   paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
@@ -80,16 +84,22 @@
                     <p:column headerText="Salario asignado">
                         <h:outputText value="#{p.salario_asignado}"/>
                     </p:column>
-
-                        <p:column headerText="Detalle">  <!--Este boton sirve para mostrar en un modal el detalle de la infoirmacion de persona -->
-                            <p:commandButton  icon="fa fa-fw fa-eye"  value=" Ver" actionListener="#{CPersona.find(p)}"  oncomplete="PF('carDialog').show()"
-                                          update="detail" />
+                    <p:column headerText="Cargo">
+                        <h:outputText value="#{p.id_cargo.cargo}"/>
                     </p:column>
+                     <p:column headerText="Sucursal">
+                         <h:outputText value="#{p.id_sucursal.nombre}"/>
+                    </p:column>
+                        
+                              <p:column headerText="Detalle">  <!--Este boton sirve para mostrar en un modal el detalle de la infoirmacion de persona -->
+                            <p:commandButton  icon="fa fa-fw fa-eye"  value=" Ver" actionListener="#{CPersona.find(p)}"  oncomplete="PF('carDialog').show()"
+                                          update="detail" /> 
+                    </p:column>
+                       
                     </p:dataTable>
-                        </p:scrollPanel>  
+                   
                 </h:form>
             </p:fieldset>
-                </p:dialog>
         </div>
         
         <!--Modal para mostrar los detalles de la informacion de persona -->
@@ -118,6 +128,12 @@
                     </p:outputPanel>
                 </h:form>
                 </p:dialog>
+        
+        
+
+
+       
+          
 
     </h:body>
 </html>

@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+
+   
+    <p:growl id="msj1" showDetail="true"/>
+    <ui:composition>
+        
+        <!--Modal para guardar -->
+        
+        
+        <!--Para mostrar los datos de la tabla  -->
+        <p:dialog widgetVar="modal-tabla-tipo" modal="true">
+       
+            
+            <p:fieldset legend="Tipos disponibles">
+            <h:form id="tabla-tipo">
+                <p:scrollPanel mode="native" style="width:1000px;height:400px">
+                <p:dataTable  var="c" value="#{cCargo.lista}" rows="10" id="data"
+                              paginator="true"
+                              paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                              currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                              rowsPerPageTemplate="5,10,15" rowIndexVar="i" widgetVar="tbCargo">
+                    <f:facet name="header">
+                      Cargos
+                    </f:facet>
+                    <f:facet name="paginatorTopLeft">
+                        <p:commandButton icon="pi pi-refresh" action="#{cCargo.clear()}" update="tabla-tipo"/>
+                    </f:facet>
+                    <f:facet name="paginatorBottomLeft">
+                        <p:commandButton icon="pi pi-refresh" action="#{cCargo.clear()}" update="tabla-tipo"/>
+                    </f:facet>
+                    <p:column headerText="Id" footerText="Id" sortBy="#{c.id_cargo}">
+                        <h:outputText value="#{i + 1}"/>
+                    </p:column>
+                    <p:column headerText="Cargo" footerText="Tipo de cargo">
+                        <h:outputText value="#{c.cargo}"/>
+                    </p:column>
+                
+                </p:dataTable>
+               
+                    </p:scrollPanel>
+            </h:form>
+                </p:fieldset>
+            
+        </p:dialog>
+        
+           
+    </ui:composition>
+</html>

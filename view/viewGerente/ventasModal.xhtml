@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Facelet Title</title>
+    </h:head>
+    <h:body>
+
+        <p:commandLink  value="Modal" type="button " onclick="PF('listaVntEmp').show();" />
+
+        <h:form id="listaVntEmp">
+            <p:dialog widgetVar="listaVntEmp" showEffect="slide" hideEffect="slide" closable="true" closeOnEscape="true"
+                      draggable="false" header=""  modal="true" resizable="false" responsive="true" position="center"
+                      blockScroll="true" >
+                
+                <p:ajax event="close" listener="#{cVenta.cleanReport()}" update=":listaVntEmp"/>
+                <p:fieldset legend="Ventas" toggleable="false">
+                    <p:dataTable  var="rep" value="#{cVenta.lista}" rows="10" id="reportsListTb" rowIndexVar="i"
+                                  paginator="true" emptyMessage="Sin resultado..."
+                                  paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                  currentPageReportTemplate="{startRecord}-{endRecord} of {totalRecords} records"
+                                  rowsPerPageTemplate="5,10,15,20"  scrollable="true" scrollHeight="500" rowHover="true"   >
+                        <f:facet name="footer">                           
+                            <h:commandLink title="Exportar Excel">
+                                <img src="../../../resources/img/excel.png" />
+                                <p:dataExporter type="xls" target="reportsListTb" fileName="ReporteVentas" />
+                            </h:commandLink>
+                            <h:commandLink title="Exportar  en PDF">
+                                <img src="../../../resources/img/pdf.png" /> 
+                                <p:dataExporter type="pdf" target="reportsListTb" fileName="ReporteVentas"/>
+                            </h:commandLink>
+                            <h:commandLink title="Exportar en CSV">
+                                <img src="../../../resources/img/csv.png" /> 
+                                <p:dataExporter type="csv" target="reportsListTb" fileName="ReporteVentas" />
+                            </h:commandLink>
+                            <h:commandLink title="Exportar en XML">
+                                <img src="../../../resources/img/xml.png" /> 
+                                <p:dataExporter type="xml" target="reportsListTb" fileName="ReporteVentas" />
+                            </h:commandLink>
+
+                        </f:facet>
+                        <f:facet name="header">
+                            Ventas realizadas
+                        </f:facet>
+                        <p:column headerText="#" filterBy="#{rep.id_venta}">
+                            <h:outputText value="#{i + 1}"/>
+                        </p:column>
+                        <p:column headerText="Cliente" filterBy="#{rep.nombre_cliente}"
+                                  filterMatchMode="contains">
+                            <h:outputText value="#{rep.nombre_cliente}"/>
+                        </p:column>
+                        <p:column headerText="Tipo Pago" filterBy="#{rep.tipo_pago}"
+                                  filterMatchMode="contains">
+                            <h:outputText value="#{rep.tipo_pago}"/>
+                        </p:column>
+                        <p:column headerText="Fecha/Hora" filterBy="#{rep.fecha_hora}"
+                                  filterMatchMode="contains">
+                            <h:outputText value="#{rep.fecha_hora}">
+                                <f:convertDateTime pattern="dd-MM-YYYY HH:MM" timeZone="CST"/>
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="Venta Total" >
+                            <h:outputText value="$ #{rep.venta_total}"/>
+                        </p:column>
+                        <p:column headerText="Vendedor" filterBy="#{rep.id_usuario.nickName}"
+                                  filterMatchMode="contains">
+                            <h:outputText value="#{rep.id_usuario.nickName}"/>
+                        </p:column>
+                        <p:column headerText="Ingresada en" filterBy="#{rep.id_sucursal.nombre}"
+                                  filterMatchMode="contains">
+                            <h:outputText value="#{rep.id_sucursal.nombre}"/>
+                        </p:column>         
+                    </p:dataTable>
+                </p:fieldset>
+            </p:dialog>
+        </h:form>
+    </h:body>
+</html>
+
